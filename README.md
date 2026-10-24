@@ -3,7 +3,7 @@
 > **WeMakeDevs × Wispr Flow Challenge — Track 2: No-Code**  
 > Describe or voice a character → deterministic vector mascot with a real 18-bone rig and 11 authored moves.  
 > Export Lottie JSON, layered SVG, 1024px PNG, or a drop-in React SDK.  
-> Zero image credits, zero runtime dependencies, zero API costs.
+> Zero image credits, no runtime APIs, zero API costs.
 
 ![Anitoon — a warm, editorial mascot studio](docs/hero.webp)
 
