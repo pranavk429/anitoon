@@ -165,7 +165,7 @@ export function renderStill(spec: MascotSpec, opts: StillOptions = {}): string {
       `${spec.name} — ${spec.tagline || `${spec.species} mascot`}`,
     desc:
       opts.desc ??
-      `Vector ${spec.species} mascot generated with Toonify.`,
+      `Vector ${spec.species} mascot generated with Anitoon.`,
   });
 }
 

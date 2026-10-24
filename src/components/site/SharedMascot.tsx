@@ -73,10 +73,10 @@ export function SharedMascot({
   }
 
   return (
-    <div className="min-h-screen bg-paper">
-      <header className="border-b-2 border-ink bg-paper/90">
-        <div className="mx-auto flex h-[68px] max-w-[1100px] items-center justify-between gap-3 px-4 sm:px-6">
-          <Link href="/" aria-label="Toonify home">
+    <div className="min-h-screen bg-[#efece4] text-[#111111]">
+      <header className="border-b border-[#d7d4cb] bg-[#efece4]/90 backdrop-blur-md">
+        <div className="mx-auto flex h-[64px] max-w-[1140px] items-center justify-between gap-3 px-4 sm:px-6">
+          <Link href="/" aria-label="Anitoon home" className="rounded-[13px] inline-flex items-center">
             <Logo />
           </Link>
           <div className="flex items-center gap-2">
@@ -101,31 +101,31 @@ export function SharedMascot({
           />
 
           <aside className="space-y-3">
-            <div className="rounded-2xl border-2 border-ink bg-white p-4 shadow-[4px_4px_0_#17151C]">
-              <p className="mono-label">Mascot</p>
-              <h1 className="mt-1 text-[2.4rem] leading-[0.92]">{spec.name}</h1>
-              <p className="mt-1 text-[14px] leading-snug text-ink/65">
+            <div className="rounded-[24px] border border-[#d7d4cb] bg-[#fefdf9] p-5 shadow-sm">
+              <p className="mono-label text-[10px]">Mascot</p>
+              <h1 className="mt-1 font-display text-[2.2rem] font-extrabold leading-[1] text-[#111111]">{spec.name}</h1>
+              <p className="mt-1 text-[14px] leading-snug text-[#6f6759]">
                 {spec.tagline}
               </p>
-              <div className="mt-3 flex flex-wrap gap-1.5">
-                <span className="chip !py-1 text-[9px] bg-butter">
+              <div className="mt-3.5 flex flex-wrap gap-1.5">
+                <span className="chip !py-0.5 text-[9px] bg-[#ffc53d] text-[#111111] border-[#ffc53d]">
                   {spec.species}
                 </span>
-                <span className="chip !py-1 text-[9px] bg-lilac">{spec.vibe}</span>
-                <span className="chip !py-1 text-[9px]">
+                <span className="chip !py-0.5 text-[9px] bg-[#c9b6ff] text-[#111111] border-[#c9b6ff]">{spec.vibe}</span>
+                <span className="chip !py-0.5 text-[9px] bg-[#fefdf9]">
                   {spec.eyes} eyes
                 </span>
                 {spec.accessories.map((a) => (
-                  <span key={a} className="chip !py-1 text-[9px] bg-mint">
+                  <span key={a} className="chip !py-0.5 text-[9px] bg-[#6fd6a8] text-[#111111] border-[#6fd6a8]">
                     {ACCESSORY_META[a].label}
                   </span>
                 ))}
               </div>
-              <div className="mt-3 grid grid-cols-3 gap-1.5">
+              <div className="mt-3.5 grid grid-cols-3 gap-1.5">
                 {[spec.primary, spec.accent, spec.ink].map((color) => (
                   <div
                     key={color}
-                    className="h-8 rounded-lg border-2 border-ink"
+                    className="h-8 rounded-[8px] border border-[#d7d4cb]"
                     style={{ background: color }}
                     title={color}
                   />
@@ -133,52 +133,52 @@ export function SharedMascot({
               </div>
             </div>
 
-            <div className="rounded-2xl border-2 border-ink bg-white p-4">
-              <p className="mono-label mb-2">Take it with you</p>
-              <div className="grid gap-1.5">
+            <div className="rounded-[24px] border border-[#d7d4cb] bg-[#fefdf9] p-5 shadow-sm">
+              <p className="mono-label mb-2.5 text-[10px]">Take it with you</p>
+              <div className="grid gap-2">
                 <button
                   type="button"
                   onClick={() => copy(window.location.href, "Link copied")}
-                  className="btn btn-sm w-full justify-between"
+                  className="btn btn-sm w-full justify-between !min-h-[36px]"
                 >
-                  Copy share link <Copy size={12} />
+                  Copy share link <Copy size={13} />
                 </button>
                 <button
                   type="button"
                   onClick={() => downloadLottie(spec, motion)}
-                  className="btn btn-sm w-full justify-between"
+                  className="btn btn-sm w-full justify-between !min-h-[36px]"
                 >
-                  Lottie · {formatBytes(lottieSize)} <Download size={12} />
+                  Lottie · {formatBytes(lottieSize)} <Download size={13} />
                 </button>
                 <button
                   type="button"
                   onClick={() => downloadSvg(spec, motion)}
-                  className="btn btn-sm w-full justify-between"
+                  className="btn btn-sm w-full justify-between !min-h-[36px]"
                 >
-                  SVG still <Download size={12} />
+                  SVG still <Download size={13} />
                 </button>
                 <Link
                   href={`/studio?m=${code}`}
-                  className="btn btn-primary btn-sm w-full justify-between"
+                  className="btn btn-primary btn-sm w-full justify-between !min-h-[36px]"
                 >
-                  Remix in studio <ArrowUpRight size={12} />
+                  Remix in studio <ArrowUpRight size={13} />
                 </Link>
               </div>
             </div>
 
-            <div className="rounded-2xl border-2 border-dashed border-ink/30 p-4">
-              <p className="font-display text-base font-bold">
+            <div className="rounded-[24px] border border-dashed border-[#d7d4cb] bg-[#efece4]/50 p-4">
+              <p className="font-display text-base font-bold text-[#111111]">
                 This is a real vector rig.
               </p>
-              <p className="mt-1 text-[11px] leading-relaxed text-ink/55">
+              <p className="mt-1 text-[12px] leading-relaxed text-[#6f6759]">
                 {build.bones.length} bones, {build.layers.length} layers, 11
-                authored moves. No image credits, no account, no lock-in.
+                authored moves. No image credits, no account, zero lock-in.
               </p>
               <Link
                 href="/"
-                className="mt-2 inline-flex items-center gap-1 font-mono text-[9px] uppercase tracking-[0.1em] text-blue hover:underline"
+                className="mt-2.5 inline-flex items-center gap-1 font-mono text-[10px] uppercase tracking-[0.1em] text-[#4b63ff] hover:underline"
               >
-                <Sparkles size={10} /> Make your own
+                <Sparkles size={11} /> Make your own
               </Link>
             </div>
           </aside>

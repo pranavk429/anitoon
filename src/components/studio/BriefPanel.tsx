@@ -59,62 +59,70 @@ export function BriefPanel({
   signals: ParsedPrompt["signals"] | null;
   autoFocus?: boolean;
 }) {
-  const [voiceSupported, setVoiceSupported] = useState<boolean | null>(null);
   const [listening, setListening] = useState(false);
   const [interim, setInterim] = useState("");
+  const [voiceSupported, setVoiceSupported] = useState<boolean | null>(null);
   const [voiceNote, setVoiceNote] = useState<string | null>(null);
-  const recognition = useRef<SpeechRecognitionLike | null>(null);
+  const recognitionRef = useRef<SpeechRecognitionLike | null>(null);
   const promptRef = useRef(prompt);
-  promptRef.current = prompt;
 
   useEffect(() => {
+    promptRef.current = prompt;
+  }, [prompt]);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
     const w = window as unknown as {
       SpeechRecognition?: SpeechConstructor;
       webkitSpeechRecognition?: SpeechConstructor;
     };
-    const Ctor = w.SpeechRecognition ?? w.webkitSpeechRecognition;
-    setVoiceSupported(Boolean(Ctor));
-    return () => {
-      recognition.current?.abort();
-    };
+    const Ctor = w.SpeechRecognition || w.webkitSpeechRecognition;
+    queueMicrotask(() => setVoiceSupported(Boolean(Ctor)));
   }, []);
 
   const startVoice = () => {
+    if (typeof window === "undefined") return;
     const w = window as unknown as {
       SpeechRecognition?: SpeechConstructor;
       webkitSpeechRecognition?: SpeechConstructor;
     };
-    const Ctor = w.SpeechRecognition ?? w.webkitSpeechRecognition;
+    const Ctor = w.SpeechRecognition || w.webkitSpeechRecognition;
     if (!Ctor) {
-      setVoiceNote(
-        "Voice input isn't available in this browser. Type the brief, or use Wispr Flow to dictate into the box.",
-      );
+      setVoiceNote("Voice input isn't supported in this browser. Type below!");
       return;
     }
     if (listening) {
-      recognition.current?.stop();
+      recognitionRef.current?.stop();
       setListening(false);
       return;
     }
+
     const rec = new Ctor();
-    recognition.current = rec;
+    recognitionRef.current = rec;
     rec.continuous = false;
     rec.interimResults = true;
     rec.lang = "en-US";
+
     let finalText = "";
-    rec.onresult = (event) => {
-      let interimText = "";
+
+    rec.onresult = (event: SpeechEvent) => {
+      let currentInterim = "";
       for (let i = event.resultIndex; i < event.results.length; i++) {
-        const result = event.results[i];
-        if (result.isFinal) finalText += result[0].transcript;
-        else interimText += result[0].transcript;
+        const item = event.results[i];
+        if (item.isFinal) {
+          finalText += `${item[0].transcript} `;
+        } else {
+          currentInterim += item[0].transcript;
+        }
       }
-      setInterim(interimText);
-      if (finalText.trim()) setPrompt(finalText.trim());
+      setInterim(currentInterim);
+      if (finalText) {
+        setPrompt(finalText.trim());
+      }
     };
-    rec.onerror = (event) => {
+
+    rec.onerror = (event: { error?: string }) => {
       setListening(false);
-      setInterim("");
       if (event.error === "not-allowed") {
         setVoiceNote(
           "Microphone permission was blocked. Allow it in your browser, or just type.",
@@ -128,7 +136,6 @@ export function BriefPanel({
     rec.onend = () => {
       setListening(false);
       setInterim("");
-      const text = finalText.trim() || promptRef.current;
       if (finalText.trim()) {
         setVoiceNote(null);
         onGenerate(finalText.trim());
@@ -151,18 +158,18 @@ export function BriefPanel({
   return (
     <section
       aria-labelledby="brief-heading"
-      className="rounded-2xl border-2 border-ink bg-white p-3"
+      className="rounded-[17px] border border-[#d7d4cb] bg-[#fefdf9] p-4 shadow-sm"
     >
-      <div className="mb-2 flex items-center justify-between gap-2">
+      <div className="mb-2.5 flex items-center justify-between gap-2">
         <div className="flex items-center gap-2">
-          <span className="flex h-6 w-6 items-center justify-center rounded-full border-2 border-ink bg-butter font-mono text-[9px] font-bold shadow-[1px_1px_0_#17151C]">
+          <span className="flex h-6 w-6 items-center justify-center rounded-full border border-[#d7d4cb] bg-[#efece4] font-mono text-[10px] font-bold text-[#111111]">
             01
           </span>
-          <h2 id="brief-heading" className="font-display text-lg font-extrabold">
+          <h2 id="brief-heading" className="font-display text-lg font-extrabold text-[#111111]">
             The brief
           </h2>
         </div>
-        <span className="mono-label">one sentence</span>
+        <span className="mono-label text-[10px]">one sentence</span>
       </div>
 
       <label htmlFor="brief" className="sr-only">
@@ -182,15 +189,15 @@ export function BriefPanel({
         autoFocus={autoFocus}
         maxLength={220}
         placeholder="A mischievous fox for our developer tool, cobalt accents, sparkly eyes…"
-        className="field resize-none !text-[13px] leading-relaxed"
+        className="field resize-none !text-[14px] leading-relaxed"
       />
-      <div className="mt-1.5 flex items-center justify-between">
+      <div className="mt-2 flex items-center justify-between">
         <button
           type="button"
           onClick={startVoice}
           className={clsx(
-            "chip !py-1.5 transition-colors",
-            listening ? "bg-coral text-ink" : "bg-white",
+            "chip !py-1 min-h-[30px] transition-colors",
+            listening ? "bg-[#ff5a45] text-white border-[#ff5a45]" : "bg-[#fefdf9]",
           )}
           aria-pressed={listening}
           title={
@@ -200,43 +207,43 @@ export function BriefPanel({
           }
         >
           {listening ? (
-            <MicOff size={12} strokeWidth={2.6} />
+            <MicOff size={13} strokeWidth={2.4} />
           ) : (
-            <Mic size={12} strokeWidth={2.6} />
+            <Mic size={13} strokeWidth={2.4} />
           )}
           {listening ? "Listening…" : "Voice"}
           {voiceSupported === false && (
             <span className="text-[8px] opacity-60">n/a</span>
           )}
         </button>
-        <span className="font-mono text-[9px] text-ink-soft">
+        <span className="font-mono text-[10px] text-[#6f6759]">
           {prompt.length}/220 · ⌘↵
         </span>
       </div>
 
       {listening && (
-        <div className="mt-2 rounded-lg border-2 border-dashed border-coral bg-coral/10 px-2.5 py-2">
-          <p className="font-mono text-[9px] uppercase tracking-[0.12em] text-coral">
+        <div className="mt-2 rounded-[13px] border border-dashed border-[#ff5a45] bg-[#ff5a45]/10 px-3 py-2">
+          <p className="font-mono text-[9px] uppercase tracking-[0.12em] text-[#ff5a45] font-semibold">
             Recording
           </p>
-          <p className="mt-1 min-h-[18px] text-[12px] italic text-ink/70">
+          <p className="mt-1 min-h-[18px] text-[12px] italic text-[#2c2823]">
             {interim || "Say the brief…"}
           </p>
         </div>
       )}
 
       {voiceNote && (
-        <p className="mt-2 rounded-lg border border-ink/15 bg-paper px-2.5 py-2 text-[11px] leading-snug text-ink/65">
+        <p className="mt-2 rounded-[13px] border border-[#d7d4cb] bg-[#efece4]/60 px-3 py-2 text-[12px] leading-snug text-[#2c2823]">
           {voiceNote}
         </p>
       )}
 
-      <div className="mt-2 flex gap-2">
+      <div className="mt-3 flex gap-2">
         <button
           type="button"
           onClick={() => onGenerate()}
           disabled={disabled}
-          className="btn btn-primary flex-1 !min-h-[40px] disabled:opacity-50"
+          className="btn btn-primary flex-1 !min-h-[42px] disabled:opacity-50"
         >
           {compiling ? (
             <>
@@ -254,7 +261,7 @@ export function BriefPanel({
           type="button"
           onClick={onSurprise}
           disabled={compiling}
-          className="btn !min-h-[40px] !px-3 disabled:opacity-50"
+          className="btn !min-h-[42px] !px-3 disabled:opacity-50"
           title="Generate a surprise mascot"
         >
           <Shuffle size={14} />
@@ -262,8 +269,8 @@ export function BriefPanel({
         </button>
       </div>
 
-      <div className="mt-3">
-        <p className="mono-label mb-1.5">Or start from one of these</p>
+      <div className="mt-3.5">
+        <p className="mono-label mb-1.5 text-[10px]">Or start from one of these</p>
         <div className="flex flex-wrap gap-1.5">
           {SAMPLE_PROMPTS.slice(0, 3).map((sample, i) => (
             <button
@@ -273,9 +280,9 @@ export function BriefPanel({
                 setPrompt(sample);
                 onGenerate(sample);
               }}
-              className="chip !py-1.5 text-[9px] hover:bg-butter"
+              className="chip !py-1 text-[10px] min-h-[28px]"
             >
-              <Sparkles size={10} />
+              <Sparkles size={10} className="text-[#4b63ff]" />
               {["Sunny cat", "Dev fox", "Sleepy blob"][i]}
             </button>
           ))}
@@ -283,43 +290,42 @@ export function BriefPanel({
       </div>
 
       {signals && (
-        <div className="mt-3 rounded-xl border-2 border-dashed border-ink/20 bg-paper/60 p-2.5">
-          <p className="mono-label mb-1.5">Compiler notes</p>
+        <div className="mt-3.5 rounded-[13px] border border-dashed border-[#d7d4cb] bg-[#efece4]/50 p-3">
+          <p className="mono-label mb-1.5 text-[10px]">Compiler signals</p>
           <div className="flex flex-wrap gap-1">
             <span
               className={clsx(
-                "chip !py-1 text-[8px]",
-                signals.species ? "bg-mint" : "bg-white",
+                "chip !py-0.5 text-[9px] min-h-[24px]",
+                signals.species ? "bg-[#6fd6a8] text-[#111111] border-[#6fd6a8]" : "bg-[#fefdf9]",
               )}
             >
               {signals.species ? "Species matched" : "Species inferred"}
             </span>
-            <span className="chip !py-1 text-[8px]">
+            <span className="chip !py-0.5 text-[9px] min-h-[24px]">
               {signals.colors} color{signals.colors === 1 ? "" : "s"}
             </span>
             <span
               className={clsx(
-                "chip !py-1 text-[8px]",
-                signals.vibe ? "bg-lilac" : "bg-white",
+                "chip !py-0.5 text-[9px] min-h-[24px]",
+                signals.vibe ? "bg-[#c9b6ff] text-[#111111] border-[#c9b6ff]" : "bg-[#fefdf9]",
               )}
             >
               {signals.vibe ? "Vibe detected" : "Vibe inferred"}
             </span>
             {signals.accessories > 0 && (
-              <span className="chip !py-1 text-[8px] bg-butter">
+              <span className="chip !py-0.5 text-[9px] min-h-[24px] bg-[#ffc53d] text-[#111111] border-[#ffc53d]">
                 {signals.accessories} accessor
                 {signals.accessories === 1 ? "y" : "ies"}
               </span>
             )}
             {signals.occupation && (
-              <span className="chip !py-1 text-[8px] bg-white">
+              <span className="chip !py-0.5 text-[9px] min-h-[24px] bg-[#fefdf9]">
                 {signals.occupation}
               </span>
             )}
           </div>
-          <p className="mt-1.5 text-[10px] leading-snug text-ink/50">
-            Same sentence, same mascot. Every time. No image credits, no render
-            queue.
+          <p className="mt-2 text-[11px] leading-snug text-[#6f6759]">
+            Deterministic rig: same sentence, same mascot. No runtime credits or latency.
           </p>
         </div>
       )}

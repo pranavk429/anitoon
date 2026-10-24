@@ -43,7 +43,7 @@ export function svgFor(
     width: 1024,
     height: 1048,
     title: `${build.spec.name} — ${build.spec.tagline}`,
-    desc: `Vector ${build.spec.species} mascot by Toonify.`,
+    desc: `Vector ${build.spec.species} mascot by Anitoon.`,
   });
 }
 
@@ -67,7 +67,7 @@ export function downloadLottie(spec: MascotSpec, motionId: MotionId = "wave") {
   const json = JSON.stringify(animation);
   downloadBlob(
     new Blob([json], { type: "application/json" }),
-    `${safeName(spec.name)}-${motionId}.json`,
+    `${safeName(spec.name)}-${motionId}.lottie.json`,
   );
   return json.length;
 }
@@ -136,12 +136,12 @@ export async function downloadPng(spec: MascotSpec, opts: PngOptions = {}) {
 }
 
 export function embedSnippet(spec: MascotSpec, origin: string, code: string) {
-  return `<!-- ${spec.name} by Toonify · no dependencies, no image credits -->
+  return `<!-- ${spec.name} by Anitoon · no dependencies, no image credits -->
 <iframe
   src="${origin}/m/${code}?embed=1"
   title="${spec.name} the ${spec.species}"
   width="420" height="430" loading="lazy"
-  style="border:0;max-width:100%;background:#F6EFDF"
+  style="border:0;max-width:100%;border-radius:17px;background:#efece4"
   allow="fullscreen"
 ></iframe>`;
 }
@@ -158,7 +158,7 @@ function sdkReadme(spec: MascotSpec, motionId: MotionId) {
   const motion = MOTION_BY_ID[motionId];
   return `# ${spec.name} — mascot SDK
 
-A layered vector ${spec.species} with a real bone rig, exported by Toonify.
+A layered vector ${spec.species} with a real bone rig, exported by Anitoon.
 Everything here is yours: no attribution, no runtime service, no image credits.
 
 ## What's inside
@@ -217,7 +217,7 @@ type MascotProps = {
   style?: React.CSSProperties;
 };
 
-/** Dependency-free SVG mascot. Replace MASCOT_SVG with any Toonify export. */
+/** Dependency-free SVG mascot. Replace MASCOT_SVG with any Anitoon export. */
 export function Mascot({
   size = 320,
   className,
@@ -254,15 +254,15 @@ function previewHtml(spec: MascotSpec, motionId: MotionId, animation: unknown) {
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>${spec.name} · ${motion.name} · Toonify</title>
+<title>${spec.name} · ${motion.name} · Anitoon</title>
 <style>
   html,body{height:100%}
-  body{margin:0;display:grid;place-items:center;background:#F6EFDF;color:#17151C;font-family:ui-sans-serif,system-ui,sans-serif}
+  body{margin:0;display:grid;place-items:center;background:#efece4;color:#111111;font-family:ui-sans-serif,system-ui,sans-serif}
   main{display:grid;justify-items:center;gap:16px;padding:24px}
-  #mascot{width:min(80vw,420px);aspect-ratio:420/430;filter:drop-shadow(6px 6px 0 rgba(23,21,28,.14))}
+  #mascot{width:min(80vw,420px);aspect-ratio:420/430;filter:drop-shadow(0 8px 16px rgba(40,34,22,.12))}
   h1{font-size:20px;margin:0;letter-spacing:-.02em}
-  p{margin:0;font:11px/1.6 ui-monospace,SFMono-Regular,Menlo,monospace;text-transform:uppercase;letter-spacing:.12em;opacity:.55}
-  footer{position:fixed;bottom:14px;font:10px ui-monospace,monospace;letter-spacing:.14em;opacity:.45;text-transform:uppercase}
+  p{margin:0;font:11px/1.6 ui-monospace,SFMono-Regular,Menlo,monospace;text-transform:uppercase;letter-spacing:.12em;opacity:.7}
+  footer{position:fixed;bottom:14px;font:10px ui-monospace,monospace;letter-spacing:.14em;opacity:.6;text-transform:uppercase}
 </style>
 </head>
 <body>
@@ -271,7 +271,7 @@ function previewHtml(spec: MascotSpec, motionId: MotionId, animation: unknown) {
   <h1>${spec.name}</h1>
   <p>${motion.name} · ${motion.duration}s · 30fps · vector</p>
 </main>
-<footer>Made with Toonify · Toonify SDK</footer>
+<footer>Made with Anitoon · Anitoon SDK</footer>
 <script src="https://unpkg.com/lottie-web@5.12.2/build/player/lottie.min.js"></script>
 <script>
   const animationData = ${data};
@@ -298,7 +298,6 @@ export async function buildSdkZip(
   motionId: MotionId = "wave",
 ): Promise<SdkBundle> {
   const build = buildMascot(spec);
-  const motion = MOTION_BY_ID[motionId];
   const animation = compileLottie(build, motionId);
   const json = JSON.stringify(animation);
   const svg = svgFor(build, motionId);

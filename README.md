@@ -1,36 +1,59 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Anitoon — Vector Mascot Compiler (No-Code)
 
-## Getting Started
+> **WeMakeDevs × Wispr Flow Challenge — Track 2: No-Code**  
+> Describe or voice a character → deterministic vector mascot with a real 18-bone rig and 11 authored moves.  
+> Export Lottie JSON, layered SVG, 1024px PNG, or a drop-in React SDK.  
+> Zero image credits, zero runtime dependencies, zero API costs.
 
-First, run the development server:
+![Anitoon — a warm, editorial mascot studio](docs/hero.webp)
+
+---
+
+## Highlights
+
+- **Deterministic Rig**: Same brief, same character geometry every time. Limbs, bones, eyes, and expressions compile locally in the browser.
+- **11 Authored Moves**: Idle, wave, jump, dance, nod, walk, spin, celebrate, think, laugh, and bow — bone-driven motion, baked at 30fps for export.
+- **Exports That Ship**:
+  - `Lottie JSON` — compact vector animation, typically ~100–200KB for a 2s move, ready for web, iOS, and Android.
+  - `Layered SVG` — infinite scale, editable vector geometry.
+  - `High-Res PNG` — 1024×1024 raster for Figma and slide decks.
+  - `React SDK ZIP` — dependency-free `Mascot.tsx` component, types, and offline preview HTML.
+- **Voice-to-Rig**: Built-in speech recognition parses natural language briefs into species, vibes, colors, and accessories.
+- **100% Client-Side**: No auth, payments, cloud database, or runtime API calls. State persists in browser `localStorage`.
+
+---
+
+## Run Locally
 
 ```bash
+# Clone the repository
+git clone https://github.com/pranavk429/anitoon.git
+cd anitoon
+
+# Install dependencies
+npm install
+
+# Start development server
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+---
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Production Build
 
-## Learn More
+```bash
+npm run build
+npm run start
+```
 
-To learn more about Next.js, take a look at the following resources:
+---
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Tech Stack
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- **Framework**: Next.js 16 (App Router, Turbopack)
+- **Library**: React 19, TypeScript
+- **Styling**: Tailwind CSS v4
+- **Animation**: Lottie Web, Canvas 2D, SVG kinematics
+- **Icons**: Lucide React

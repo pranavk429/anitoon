@@ -1,177 +1,154 @@
 import Link from "next/link";
+import Image from "next/image";
 import {
   ArrowRight,
   ArrowUpRight,
-  Check,
   FileArchive,
   FileCode2,
   FileImage,
-  Layers,
-  Mic,
-  MoveRight,
   Play,
-  Sparkles,
-  Unlock,
-  Waypoints,
-  X,
+  Share2,
   Zap,
 } from "lucide-react";
 import { SiteNav } from "@/components/site/SiteNav";
 import { HeroStage } from "@/components/site/HeroStage";
-import { PixelMascot } from "@/components/site/PixelMascot";
 import { Logo } from "@/components/site/Logo";
 import { MascotStill } from "@/components/mascot/MascotStill";
 import { DEMO_SPEC, GALLERY, SAMPLE_PROMPTS } from "@/lib/mascot/presets";
 import { MOTIONS } from "@/lib/mascot/animate";
-import { encodeSpec } from "@/lib/mascot/spec";
-import { renderStill } from "@/lib/mascot/svg";
 import { sizeReport } from "@/lib/mascot/export";
+import { renderStill } from "@/lib/mascot/svg";
 
 const report = sizeReport(DEMO_SPEC, "wave");
-const pixelSvg = renderStill(DEMO_SPEC, {
-  width: 84,
-  height: 86,
-  motion: "idle",
-  at: 0.2,
-});
 
-const MARQUEE_ITEMS = [
-  "No raster",
-  "No keyframes",
-  "No lock-in",
+const MARQUEE_ITEMS_1 = [
   "18 bones",
-  "11 real moves",
+  "11 authored moves",
+  "0 image credits",
   "Lottie ready",
   "SVG forever",
-  "0 image credits",
-  "30fps",
+  "100% vector",
+  "Drop-in React SDK",
+  "Deterministic rig",
+  "30fps motion",
 ];
 
-const HOW = [
-  {
-    n: "01",
-    title: "Describe",
-    copy: "One sentence. A vibe, a color, a species. Type it or say it out loud — the compiler extracts the signals and never asks you to prompt-engineer.",
-    accent: "bg-butter",
-    icon: Sparkles,
-  },
-  {
-    n: "02",
-    title: "Direct",
-    copy: "Swap species, palette, eyes, patterns, accessories. Every change recompiles the same deterministic rig, so the character never drifts.",
-    accent: "bg-mint",
-    icon: Waypoints,
-  },
-  {
-    n: "03",
-    title: "Ship",
-    copy: "Pick a move and export. Lottie for the site, SVG for the deck, PNG for the deck you'll present anyway, and a zip your developer will forgive you for.",
-    accent: "bg-coral",
-    icon: FileArchive,
-  },
+const MARQUEE_ITEMS_2 = [
+  "WeMakeDevs × Wispr Flow",
+  "Track 2: No-Code",
+  "Vectors, not pixels",
+  "Zero runtime APIs",
+  "Local browser compiler",
+  "Clean bezier art",
+  "No keyframing required",
 ];
 
-const FORMATS = [
+const CAPABILITIES = [
   {
     name: "Lottie JSON",
     icon: Play,
     detail: `${report.lottieLabel} · ${report.layerCount} layers · 30fps`,
-    note: "Verified in lottie-web",
-    color: "bg-blue text-white",
+    note: "Web, iOS, Android",
   },
   {
-    name: "SVG",
+    name: "Layered SVG",
     icon: FileCode2,
-    detail: `${report.svgLabel} · infinite scale · editable`,
-    note: "Crisp at any size",
-    color: "bg-butter text-ink",
+    detail: `${report.svgLabel} · infinite scale · clean DOM`,
+    note: "Crisp at billboard size",
   },
   {
-    name: "PNG",
+    name: "Crisp PNG",
     icon: FileImage,
-    detail: "1024 × 1024 · paper or transparent",
-    note: "Canvas-rendered",
-    color: "bg-mint text-ink",
+    detail: "1024 × 1024 · canvas rendered · transparent",
+    note: "Ready for Figma & decks",
   },
   {
-    name: "SDK ZIP",
+    name: "React SDK",
     icon: FileArchive,
-    detail: "JSON · SVG · PNG · Mascot.tsx · README · preview",
-    note: "Six files, zero deps",
-    color: "bg-coral text-ink",
+    detail: "Mascot.tsx · drop-in component · 0 deps",
+    note: "Instant dev integration",
+  },
+  {
+    name: "Share Links",
+    icon: Share2,
+    detail: "URL-encoded spec · zero database dependency",
+    note: "Instant remixing",
+  },
+  {
+    name: "No-Code Core",
+    icon: Zap,
+    detail: "Natural voice & text parser · 0 API delay",
+    note: "Runs 100% in browser",
+  },
+];
+
+const WHERE_SHIPS = [
+  {
+    n: "01",
+    title: "Landing pages & hero greeters",
+    copy: "Delight visitors with a living brand face that waves, celebrates, or points to key actions without heavy video files.",
+  },
+  {
+    n: "02",
+    title: "Product tours & onboarding",
+    copy: "Guide new users step-by-step with celebratory animations that feel responsive, lightweight, and human.",
+  },
+  {
+    n: "03",
+    title: "Empty states & error pages",
+    copy: "Turn zero-data states and 404 screens into warm memorable interactions that build trust.",
+  },
+  {
+    n: "04",
+    title: "Pitch decks, docs & social",
+    copy: "Consistent vector art that exports cleanly to Figma, slides, avatars, and video overlays with zero pixelation.",
   },
 ];
 
 const FAQ = [
   {
-    q: "Is it actually free?",
-    a: "Yes. No account, no credits, no trial timer, no card field that mysteriously appears at export. The compiler runs in your browser and the files are yours.",
+    q: "Is Anitoon actually free?",
+    a: "Yes. No account, no credits, no trial timer, and no credit card field. The compiler runs entirely in your browser and all exported files are yours.",
   },
   {
     q: "Do I need design or animation skills?",
-    a: "No. You pick a species, a palette, and a face from labelled options. The rig, the motion curves, and the bezier cleanup are already done. Designers can still get under the hood with the exported SVG and Lottie JSON.",
+    a: "No. You describe your character or choose species, palette, and accessories. The 18-bone rig, easing curves, and bezier cleanup are pre-authored.",
   },
   {
-    q: "What exactly can I export?",
-    a: "A layered SVG, a Lottie JSON with the move baked in, a 1024×1024 PNG, and a zip with all of it plus a dependency-free React component, a README, and an offline preview page.",
+    q: "How is Anitoon different from an AI image mascot?",
+    a: "An image generator outputs flat raster pixels. Anitoon compiles a real vector rig: layered SVG geometry, bone hierarchies, and 11 authored moves at kilobyte sizes.",
   },
   {
-    q: "How is this different from an AI image mascot?",
-    a: "An image is a picture of a mascot. Toonify compiles a real vector rig: separate limbs, a bone hierarchy, and authored motion. It stays crisp at billboard size, weighs kilobytes instead of megabytes, and every part can be edited later.",
-  },
-  {
-    q: "Does it work without an account?",
-    a: "All of it. Your mascot autosaves to your browser's local storage. Share links encode the entire design in the URL, so nobody needs to sign in to open or remix one.",
+    q: "What formats can I export?",
+    a: "Layered SVG, Lottie JSON with motion baked in, 1024×1024 transparent PNG, and a full SDK zip with Mascot.tsx, README, and an offline preview page.",
   },
   {
     q: "Can I use the mascots commercially?",
-    a: "Yes — the exported files come with no attribution requirement and no runtime service. You own what you make. (Standard lawyer caveat: don't upload someone else's trademark and call it yours.)",
+    a: "Yes — exported files come with no attribution requirement and no runtime service. You own what you create.",
   },
 ];
 
-function SectionLabel({ children }: { children: React.ReactNode }) {
+function PromptForm({ id }: { id: string }) {
   return (
-    <p className="eyebrow mb-4 flex items-center gap-2 text-ink-soft">
-      <span className="inline-block h-2 w-2 rounded-full bg-coral" />
-      {children}
-    </p>
-  );
-}
-
-function PromptForm({
-  id,
-  compact = false,
-}: {
-  id: string;
-  compact?: boolean;
-}) {
-  return (
-    <form action="/studio" method="get" className="relative">
+    <form action="/studio" method="get" className="relative w-full max-w-[620px]">
       <label htmlFor={id} className="sr-only">
-        Describe your mascot
+        Describe your brand mascot
       </label>
-      <div
-        className={`card-flat flex flex-col gap-2 bg-white p-2 sm:flex-row sm:items-center ${compact ? "" : "sm:p-2.5"}`}
-      >
-        <div className="flex min-w-0 flex-1 items-center gap-2 px-2">
-          <Sparkles
-            size={18}
-            strokeWidth={2.4}
-            className="shrink-0 text-blue"
-          />
-          <input
-            id={id}
-            name="prompt"
-            type="text"
-            autoComplete="off"
-            placeholder="A mischievous fox for our developer tool, cobalt accents…"
-            className="min-w-0 flex-1 border-0 bg-transparent py-3 font-body text-[15px] text-ink outline-none placeholder:text-ink/40"
-          />
-        </div>
-        <button type="submit" className="btn btn-primary shrink-0">
-          Compile mascot
-          <ArrowRight size={15} strokeWidth={2.6} />
-        </button>
+      <div className="panel-tactile flex items-center gap-2 p-2 sm:p-2.5">
+        <input
+          id={id}
+          type="text"
+          name="prompt"
+          defaultValue=""
+          placeholder="A sunny orange cat named Mochi with a blue scarf…"
+          className="min-h-[44px] flex-1 border-0 bg-transparent px-3 text-[15px] font-medium text-[#111111] outline-none placeholder:text-[#6f6759]"
+        />
+        <Link
+          href="/studio"
+          className="btn btn-primary min-h-[44px] shrink-0 px-5 font-mono text-[12px] font-semibold text-white shadow-sm"
+        >
+          Open studio <ArrowRight size={14} strokeWidth={2.4} />
+        </Link>
       </div>
     </form>
   );
@@ -179,809 +156,595 @@ function PromptForm({
 
 export default function Home() {
   return (
-    <>
+    <div className="flex min-h-full flex-col bg-[#efece4] text-[#111111]">
       <SiteNav />
-      <main id="main">
-        {/* ---------------------------------------------------------- hero */}
-        <section className="relative overflow-hidden">
-          <div className="pointer-events-none absolute -right-24 -top-20 h-[420px] w-[420px] rounded-full border-2 border-ink/10 halftone-blue opacity-50" />
-          <div className="mx-auto grid min-w-0 max-w-[1240px] items-center gap-12 px-4 pb-20 pt-12 sm:px-6 lg:grid-cols-[minmax(0,1fr)_minmax(420px,520px)] lg:gap-10 lg:pb-24 lg:pt-16">
-            <div className="relative z-10 min-w-0">
-              <p className="eyebrow mb-5 inline-flex items-center gap-2 rounded-full border-2 border-ink bg-white px-3 py-2 shadow-[2px_2px_0_#17151C]">
-                <span className="h-2 w-2 rounded-full bg-coral blink-dot" />
-                Wispr Challenge · Track 2: No-Code
-              </p>
-              <h1 className="text-[clamp(2.55rem,6.2vw,5.6rem)]">
-                Your brand,
-                <br />
-                but it{" "}
-                <span className="scribble text-blue">waves back</span>.
-              </h1>
-              <p className="mt-6 max-w-[34rem] text-[17px] leading-[1.55] text-ink/80 sm:text-lg">
-                Type a sentence. Toonify compiles a{" "}
-                <strong className="font-semibold text-ink">
-                  layered vector mascot
-                </strong>{" "}
-                with a real bone rig and 11 authored moves — then hands you
-                Lottie, SVG, PNG, and a drop-in SDK.
-              </p>
-              <p className="mt-2 font-mono text-[10px] uppercase tracking-[0.14em] text-ink-soft">
-                No image credits · No keyframes · No lock-in
+
+      <main id="main" className="flex-1">
+        {/* =========================================================================
+            SECTION 1: HERO (Role: hero, Target Height: ~939px, Bg: #efece4)
+        ========================================================================= */}
+        <section
+          role="region"
+          aria-label="Hero"
+          className="relative overflow-hidden border-b border-[#d7d4cb] bg-[#efece4] pb-16 pt-10 sm:pb-20 sm:pt-14 lg:pb-24 lg:pt-16"
+        >
+          {/* Subtle floating 3D props */}
+          <div className="pointer-events-none absolute -left-10 top-16 z-0 hidden lg:block opacity-90 animate-pulse">
+            <Image
+              src="/art/prop-star.webp"
+              alt=""
+              width={140}
+              height={140}
+              unoptimized
+              className="drop-shadow-[0_8px_16px_rgba(40,34,22,0.12)]"
+            />
+          </div>
+          <div className="pointer-events-none absolute right-10 top-20 z-0 hidden lg:block opacity-90">
+            <Image
+              src="/art/prop-spark.webp"
+              alt=""
+              width={130}
+              height={130}
+              priority
+              unoptimized
+              className="float-soft drop-shadow-[0_8px_16px_rgba(40,34,22,0.12)]"
+            />
+          </div>
+          <div className="pointer-events-none absolute left-1/4 bottom-8 z-0 hidden xl:block opacity-80">
+            <Image
+              src="/art/prop-squiggle.webp"
+              alt=""
+              width={160}
+              height={160}
+              unoptimized
+              className="drop-shadow-[0_8px_16px_rgba(40,34,22,0.12)]"
+            />
+          </div>
+          <div className="pointer-events-none absolute right-1/4 top-10 z-0 hidden xl:block opacity-85">
+            <Image
+              src="/art/prop-eye.webp"
+              alt=""
+              width={100}
+              height={100}
+              unoptimized
+              className="drop-shadow-[0_8px_16px_rgba(40,34,22,0.12)]"
+            />
+          </div>
+
+          <div className="relative z-10 mx-auto max-w-[1140px] px-4 sm:px-6">
+            <div className="flex flex-col items-center text-center">
+              {/* Eyebrow */}
+              <p className="type-body-xs uppercase tracking-[1.1px] text-[#6f6759] flex items-center gap-2 mb-4">
+                <span className="inline-block h-2 w-2 rounded-full bg-[#4b63ff]" />
+                VECTOR MASCOT COMPILER · NO-CODE ENGINE
               </p>
 
-              <div className="mt-7">
+              {/* Giant 3D signature wordmark */}
+              <div className="relative mb-3 flex items-center justify-center">
+                <Image
+                  src="/art/anitoon-wordmark.webp"
+                  alt="ANITOON"
+                  width={501}
+                  height={180}
+                  priority
+                  unoptimized
+                  className="max-h-[140px] w-auto object-contain mix-blend-multiply drop-shadow-[0_10px_14px_rgba(40,34,22,0.14)] sm:max-h-[170px] lg:max-h-[200px]"
+                />
+              </div>
+
+              {/* Headline */}
+              <h1 className="type-h2-68 text-[#111111] max-w-[900px] text-center mt-1 mb-4">
+                Your brand, but it waves back.
+              </h1>
+
+              {/* Subhead */}
+              <p className="type-body-lg text-[#2c2823] max-w-[680px] text-center mb-8">
+                Describe or voice a character. Anitoon compiles a real layered vector
+                mascot with 18 bones, 11 authored moves, and instant Lottie, SVG, PNG,
+                and React SDK exports. No image credits, no runtime lock-in.
+              </p>
+
+              {/* Interactive prompt form */}
+              <div className="mb-4 w-full flex justify-center">
                 <PromptForm id="hero-prompt" />
               </div>
 
-              <div className="mt-3 flex flex-wrap items-center gap-2">
-                <span className="mono-label">Try:</span>
-                {[
-                  ["Sunny cat", 0],
-                  ["Mischievous fox", 1],
-                  ["Sleepy blob", 2],
-                ].map(([label, index]) => (
+              {/* Sample prompt chips */}
+              <div className="flex flex-wrap items-center justify-center gap-2 mb-10">
+                <span className="type-body-xs text-[#6f6759]">Try:</span>
+                {SAMPLE_PROMPTS.slice(0, 3).map((s) => (
                   <Link
-                    key={label as string}
-                    href={`/studio?prompt=${encodeURIComponent(SAMPLE_PROMPTS[index as number])}`}
-                    className="chip bg-paper transition-colors hover:bg-butter"
+                    key={s}
+                    href={`/studio?prompt=${encodeURIComponent(s)}`}
+                    className="chip radius-xs min-h-[30px] border-[#d7d4cb] bg-[#fefdf9] text-[#111111] hover:border-[#4b63ff]"
                   >
-                    {label}
+                    {s}
                   </Link>
                 ))}
-                <span className="ml-1 hidden items-center gap-1.5 font-mono text-[10px] uppercase tracking-[0.08em] text-ink-soft sm:inline-flex">
-                  <Mic size={12} strokeWidth={2.4} /> or say it in the studio
-                </span>
               </div>
 
-              <div className="mt-9 flex flex-wrap items-center gap-x-6 gap-y-3 border-t-2 border-dashed border-ink/20 pt-5">
-                {[
-                  ["8", "species"],
-                  [String(report.boneCount), "bones"],
-                  ["11", "moves"],
-                  [report.svgLabel, "SVG"],
-                ].map(([value, label]) => (
-                  <div key={label} className="flex items-baseline gap-1.5">
-                    <span className="font-display text-2xl font-black leading-none">
-                      {value}
-                    </span>
-                    <span className="mono-label">{label}</span>
-                  </div>
-                ))}
+              {/* Live interactive mascot stage */}
+              <div className="w-full max-w-[760px]">
+                <HeroStage />
               </div>
             </div>
+          </div>
 
-            <div className="relative z-10 min-w-0 lg:pl-4">
-              <HeroStage />
-            </div>
+          {/* Giant background watermark */}
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute -bottom-24 right-0 select-none overflow-hidden opacity-[0.035]"
+          >
+            <span className="type-heading-300 text-[#111111]">ANITOON</span>
           </div>
         </section>
 
-        {/* ------------------------------------------------------- marquee */}
-        <div className="relative overflow-hidden border-y-2 border-ink bg-blue py-3 text-white">
-          <div className="marquee" aria-hidden="true">
-            {[0, 1].map((copy) => (
-              <div key={copy} className="flex shrink-0 items-center">
-                {MARQUEE_ITEMS.map((item) => (
-                  <span
-                    key={`${copy}-${item}`}
-                    className="flex items-center gap-4 px-4 font-mono text-[11px] font-medium uppercase tracking-[0.16em]"
-                  >
-                    {item}
-                    <span className="text-butter">✦</span>
-                  </span>
-                ))}
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* ---------------------------------------------------- difference */}
-        <section className="relative border-b-2 border-ink bg-paper-2/50">
-          <div className="mx-auto max-w-[1240px] px-4 py-20 sm:px-6 lg:py-24">
-            <div className="grid gap-8 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] lg:items-end">
-              <div>
-                <SectionLabel>The difference</SectionLabel>
-                <h2 className="text-[clamp(2.4rem,4.4vw,4rem)]">
-                  Stickers don&apos;t
-                  <br />
-                  build brands.
-                </h2>
-              </div>
-              <p className="max-w-xl text-[16px] leading-[1.6] text-ink/75 lg:pb-2">
-                Most mascot generators give you a raster image with three
-                invisible bones and a motion preset. It looks fine until it
-                needs to scale, wave, or be edited by anyone. Toonify compiles
-                geometry and motion instead of drawing a picture.
-              </p>
-            </div>
-
-            <div className="mt-10 grid gap-6 md:grid-cols-2">
-              <div className="card relative flex h-full flex-col overflow-hidden bg-[#f1e8e3] p-5">
-                <div className="flex items-center justify-between">
-                  <span className="chip border-coral bg-white text-coral">
-                    <X size={12} strokeWidth={3} /> Raster puppet
-                  </span>
-                  <span className="mono-label">ai-image-mascot.png</span>
-                </div>
-                <div className="relative mt-5 flex flex-1 items-center overflow-hidden rounded-xl border-2 border-ink/30 bg-white/70">
-                  <div className="absolute inset-0 z-10 halftone opacity-30" />
-                  <PixelMascot
-                    svg={pixelSvg}
-                    alt="A deliberately low-resolution mascot, representing a raster image"
-                    pixels={84}
-                    className="opacity-80 blur-[0.2px]"
-                  />
-                  <div className="absolute left-[50%] top-[30%] z-20 h-3 w-3 rounded-full border-2 border-white bg-coral" />
-                  <div className="absolute left-[36%] top-[62%] z-20 h-3 w-3 rounded-full border-2 border-white bg-coral" />
-                  <div className="absolute left-[64%] top-[68%] z-20 h-3 w-3 rounded-full border-2 border-white bg-coral" />
-                  <span className="absolute bottom-2 left-2 z-20 rounded-full bg-ink px-2 py-1 font-mono text-[9px] uppercase tracking-[0.14em] text-white">
-                    3 bones · 4.2 MB
-                  </span>
-                </div>
-                <ul className="mt-5 grid gap-2 text-sm text-ink/65">
-                  {[
-                    "Blurry at billboard size",
-                    "Limbs are baked into one image",
-                    "Every edit needs a new generation",
-                  ].map((item) => (
-                    <li key={item} className="flex items-start gap-2">
-                      <X
-                        size={14}
-                        strokeWidth={3}
-                        className="mt-0.5 shrink-0 text-coral"
-                      />
-                      {item}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-
-              <div className="card relative overflow-hidden border-blue p-5 shadow-[8px_8px_0_#2B4BF2]">
-                <div className="flex items-center justify-between">
-                  <span className="chip bg-mint">
-                    <Waypoints size={12} strokeWidth={2.8} /> Real vector rig
-                  </span>
-                  <span className="mono-label">mochi-wave.svg</span>
-                </div>
-                <div className="relative mt-5 overflow-hidden rounded-xl border-2 border-ink bg-white">
-                  <div className="absolute inset-0 halftone opacity-30" />
-                  <MascotStill
-                    spec={DEMO_SPEC}
-                    motion="wave"
-                    at={0.22}
-                    showRig
-                    className="relative z-10 w-full"
-                  />
-                  <span className="absolute bottom-2 left-2 z-20 rounded-full bg-blue px-2 py-1 font-mono text-[9px] uppercase tracking-[0.14em] text-white">
-                    {report.boneCount} bones · {report.svgLabel}
-                  </span>
-                </div>
-                <ul className="mt-5 grid gap-2 text-sm text-ink/75">
-                  {[
-                    "Crisp at any size, forever",
-                    "Limbs, tail and ears move independently",
-                    "Lottie + SVG + React, all editable",
-                  ].map((item) => (
-                    <li key={item} className="flex items-start gap-2">
-                      <Check
-                        size={14}
-                        strokeWidth={3}
-                        className="mt-0.5 shrink-0 text-blue"
-                      />
-                      {item}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </div>
-
-            <div className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-              {[
-                {
-                  icon: Zap,
-                  title: "Instant, deterministic",
-                  copy: "Same sentence, same mascot. Zero render queues.",
-                },
-                {
-                  icon: Layers,
-                  title: "18 real joints",
-                  copy: "A hierarchy, not a bendy JPEG.",
-                },
-                {
-                  icon: FileCode2,
-                  title: "Kilobytes, not megabytes",
-                  copy: `${report.svgLabel} SVG · ${report.lottieLabel} Lottie.`,
-                },
-                {
-                  icon: Unlock,
-                  title: "Yours with no asterisk",
-                  copy: "No attribution, no runtime API, no lock-in.",
-                },
-              ].map((item) => (
-                <div
-                  key={item.title}
-                  className="card-flat flex gap-3 p-4 shadow-[3px_3px_0_#17151C]"
-                >
-                  <item.icon
-                    size={18}
-                    strokeWidth={2.4}
-                    className="mt-0.5 shrink-0 text-blue"
-                  />
-                  <div>
-                    <p className="font-display text-[15px] font-bold leading-tight">
-                      {item.title}
-                    </p>
-                    <p className="mt-1 text-[12px] leading-snug text-ink/60">
-                      {item.copy}
-                    </p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* --------------------------------------------------- how it works */}
-        <section id="how" className="border-b-2 border-ink bg-paper">
-          <div className="mx-auto max-w-[1240px] px-4 py-20 sm:px-6 lg:py-24">
-            <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
-              <div>
-                <SectionLabel>How it works</SectionLabel>
-                <h2 className="max-w-[16ch] text-[clamp(2.4rem,4.4vw,4rem)]">
-                  Three steps. One of them is a sentence.
-                </h2>
-              </div>
-              <p className="max-w-sm text-[15px] leading-relaxed text-ink/65">
-                The whole compile happens locally in under a second. No upload,
-                no queue, no “generation failed, try again” screen.
-              </p>
-            </div>
-
-            <div className="mt-10 grid gap-5 lg:grid-cols-3">
-              {HOW.map((step, i) => (
-                <div
-                  key={step.n}
-                  className={`card relative overflow-hidden p-5 ${i === 1 ? "lg:-translate-y-3" : ""} ${i === 2 ? "lg:translate-y-2" : ""}`}
-                >
-                  <div className="flex items-start justify-between">
-                    <div
-                      className={`flex h-11 w-11 items-center justify-center rounded-full border-2 border-ink ${step.accent} shadow-[2px_2px_0_#17151C]`}
-                    >
-                      <step.icon size={19} strokeWidth={2.4} />
-                    </div>
-                    <span className="font-display text-5xl font-black leading-none text-ink/10">
-                      {step.n}
-                    </span>
-                  </div>
-                  <h3 className="mt-4 text-2xl">{step.title}</h3>
-                  <p className="mt-2 text-[14px] leading-relaxed text-ink/65">
-                    {step.copy}
-                  </p>
-
-                  <div className="mt-5 rounded-xl border-2 border-dashed border-ink/25 bg-paper/60 p-3">
-                    {i === 0 && (
-                      <div className="space-y-2">
-                        <p className="mono-label">Your brief</p>
-                        <p className="rounded-lg border-2 border-ink bg-white px-3 py-2 text-[13px] leading-snug">
-                          A mischievous fox for our developer tool, cobalt
-                          accents, sparkly eyes
-                          <span className="ml-0.5 inline-block h-4 w-0.5 animate-pulse bg-blue align-middle" />
-                        </p>
-                        <div className="flex gap-1.5">
-                          <span className="chip bg-butter">Fox detected</span>
-                          <span className="chip bg-white">2 colors</span>
-                        </div>
-                      </div>
-                    )}
-                    {i === 1 && (
-                      <div>
-                        <p className="mono-label mb-2">Direct the rig</p>
-                        <div className="flex items-center gap-2">
-                          {GALLERY.slice(0, 4).map((g) => (
-                            <span
-                              key={g.spec.name}
-                              className="flex h-12 w-12 items-center justify-center overflow-hidden rounded-full border-2 border-ink bg-white"
-                            >
-                              <MascotStill
-                                spec={g.spec}
-                                className="w-14"
-                                shadow="none"
-                              />
-                            </span>
-                          ))}
-                          <span className="flex h-12 w-12 items-center justify-center rounded-full border-2 border-dashed border-ink/40 font-mono text-[9px]">
-                            +4
-                          </span>
-                        </div>
-                        <div className="mt-3 flex items-center gap-2">
-                          {["#2B4BF2", "#FF5A45", "#FFC53D", "#6FD6A8"].map(
-                            (c) => (
-                              <span
-                                key={c}
-                                className="h-5 w-5 rounded-full border-2 border-ink"
-                                style={{ background: c }}
-                              />
-                            ),
-                          )}
-                          <span className="chip ml-auto bg-white">
-                            Sparkle eyes
-                          </span>
-                        </div>
-                      </div>
-                    )}
-                    {i === 2 && (
-                      <div className="space-y-1.5">
-                        <p className="mono-label mb-2">One click, four files</p>
-                        {[
-                          ["Lottie", report.lottieLabel, "bg-blue text-white"],
-                          ["SVG", report.svgLabel, "bg-butter"],
-                          ["PNG", "1024²", "bg-mint"],
-                          ["SDK", "6 files", "bg-coral"],
-                        ].map(([name, size, color]) => (
-                          <div
-                            key={name}
-                            className="flex items-center justify-between rounded-lg border-2 border-ink bg-white px-2.5 py-1.5"
-                          >
-                            <span className="font-mono text-[10px] uppercase tracking-[0.1em]">
-                              {name}
-                            </span>
-                            <span
-                              className={`rounded-full border border-ink px-2 py-0.5 font-mono text-[9px] ${color}`}
-                            >
-                              {size}
-                            </span>
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
-              <Link href="/studio" className="btn btn-primary">
-                Try it with your own sentence
-                <ArrowUpRight size={15} />
-              </Link>
-              <span className="font-mono text-[10px] uppercase tracking-[0.12em] text-ink-soft">
-                No account · autosaves locally · share by URL
-              </span>
-            </div>
-          </div>
-        </section>
-
-        {/* ----------------------------------------------------------- moves */}
+        {/* =========================================================================
+            SECTION 2: SELECTED WORK (Role: hero, Target Height: ~1566px, 2 Cols)
+        ========================================================================= */}
         <section
-          id="moves"
-          className="relative overflow-hidden border-b-2 border-ink bg-ink text-paper"
+          id="work"
+          role="region"
+          aria-label="Selected compiled mascots"
+          className="border-b border-[#d7d4cb] bg-[#efece4] py-16 sm:py-20 lg:py-[108px]"
         >
-          <div className="pointer-events-none absolute inset-0 halftone opacity-[0.07]" />
-          <div className="relative mx-auto max-w-[1240px] px-4 py-20 sm:px-6 lg:py-24">
-            <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
+          <div className="mx-auto max-w-[1140px] px-4 sm:px-6">
+            <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-12">
               <div>
-                <p className="eyebrow mb-4 flex items-center gap-2 text-paper/60">
-                  <span className="inline-block h-2 w-2 rounded-full bg-butter" />
-                  The move library
+                <p className="type-body-xs uppercase tracking-[1.1px] text-[#6f6759] flex items-center gap-2 mb-2">
+                  <span className="inline-block h-2 w-2 rounded-full bg-[#ff5a45]" />
+                  SELECTED COMPILED MASCOTS
                 </p>
-                <h2 className="text-[clamp(2.4rem,4.4vw,4rem)] text-paper">
-                  Eleven moves.
-                  <br />
-                  <span className="text-butter">No keyframes.</span>
+                <h2 className="type-h2-60 text-[#111111]">
+                  Things we&apos;ve compiled. Mascots with bones.
                 </h2>
               </div>
-              <p className="max-w-sm text-[15px] leading-relaxed text-paper/60">
-                Authored on a real skeleton, then baked at 30fps. Every move
-                works on every species, every palette, every accessory. Click
-                one to open it in the studio.
-              </p>
+              <Link
+                href="/studio"
+                className="btn btn-primary min-h-[44px] font-mono text-[12px] self-start md:self-end"
+              >
+                Compile your own <ArrowUpRight size={14} />
+              </Link>
             </div>
 
-            <div className="mt-10 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
-              {MOTIONS.map((motion, i) => {
-                const item = GALLERY[i % GALLERY.length];
-                const href = `/studio?m=${encodeSpec(item.spec)}&move=${motion.id}`;
+            {/* 2-Column Mascot Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              {GALLERY.slice(0, 4).map((item, idx) => {
+                const stillSvg = renderStill(item.spec, {
+                  width: 320,
+                  height: 330,
+                  motion: idx % 2 === 0 ? "wave" : "jump",
+                  at: 0.28,
+                  shadow: "soft",
+                });
                 return (
-                  <Link
-                    key={motion.id}
-                    href={href}
-                    className="group relative overflow-hidden rounded-2xl border-2 border-paper/80 bg-paper p-2 text-ink transition-transform duration-200 hover:-translate-y-1.5 hover:rotate-[-1deg] focus-visible:-translate-y-1.5"
+                  <div
+                    key={item.spec.name}
+                    className="card card-xl group relative overflow-hidden rounded-[24px] border border-[#d7d4cb] bg-[#fefdf9] p-6 sm:p-8 shadow-sm flex flex-col justify-between"
                   >
-                    <div
-                      className="relative overflow-hidden rounded-xl border-2 border-ink"
-                      style={{ background: item.color }}
-                    >
-                      <MascotStill
-                        spec={item.spec}
-                        motion={motion.id}
-                        at={0.32}
-                        shadow="none"
-                        className="transition-transform duration-300 group-hover:scale-[1.04]"
-                      />
-                      <span className="absolute right-1.5 top-1.5 rounded-full border border-ink bg-white/90 px-1.5 py-0.5 font-mono text-[8px] uppercase tracking-[0.12em]">
-                        {motion.duration}s
-                      </span>
-                    </div>
-                    <div className="flex items-center justify-between gap-2 px-1 pb-0.5 pt-2">
-                      <div className="min-w-0">
-                        <p className="font-display text-lg font-extrabold leading-none">
-                          {motion.name}
-                        </p>
-                        <p className="mt-1 truncate font-mono text-[8.5px] uppercase tracking-[0.1em] text-ink-soft">
-                          {motion.label}
-                        </p>
+                    <div>
+                      <div className="flex items-center justify-between gap-2 mb-4">
+                        <span className="panel-tactile px-3 py-1 font-mono text-[11px] font-semibold uppercase tracking-[0.06em] text-[#111111]">
+                          0{idx + 1} · {item.spec.species}
+                        </span>
+                        <span className="font-mono text-[11px] uppercase tracking-[0.08em] text-[#6f6759]">
+                          18 bones · 11 moves
+                        </span>
                       </div>
-                      <ArrowUpRight
-                        size={15}
-                        strokeWidth={2.6}
-                        className="shrink-0 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
-                      />
+
+                      <div className="relative flex justify-center py-6 bg-[#efece4]/50 rounded-[17px] border border-[#d7d4cb]/60 mb-6 group-hover:scale-[1.02] transition-transform duration-500">
+                        <div
+                          className="w-[260px] h-[270px] flex items-center justify-center"
+                          dangerouslySetInnerHTML={{ __html: stillSvg }}
+                        />
+                      </div>
+
+                      <h3 className="type-h2-48 text-[#111111] mb-2">{item.spec.name}</h3>
+                      <p className="type-body text-[#2c2823] mb-4">{item.blurb}</p>
                     </div>
-                  </Link>
+
+                    <div className="flex items-center justify-between border-t border-[#d7d4cb] pt-4 mt-2">
+                      <span className="type-body-xs-12 text-[#6f6759]">
+                        {item.spec.tagline}
+                      </span>
+                      <Link
+                        href={`/studio?prompt=${encodeURIComponent(`${item.spec.name} the ${item.spec.vibe} ${item.spec.species}`)}`}
+                        className="inline-flex min-h-[36px] items-center gap-1.5 font-mono text-[12.5px] font-semibold text-[#4b63ff] hover:underline"
+                      >
+                        Open in studio <ArrowUpRight size={14} />
+                      </Link>
+                    </div>
+                  </div>
                 );
               })}
-              <div className="flex flex-col justify-between rounded-2xl border-2 border-dashed border-paper/25 p-4">
-                <Sparkles size={20} className="text-butter" />
-                <div>
-                  <p className="font-display text-xl font-bold leading-tight text-paper">
-                    Need a move that isn&apos;t here?
-                  </p>
-                  <p className="mt-1 text-[12px] leading-snug text-paper/55">
-                    The rig is standard Lottie. Animate it yourself, or remix
-                    one of these.
-                  </p>
-                  <Link
-                    href="/studio"
-                    className="mt-3 inline-flex items-center gap-1 font-mono text-[10px] uppercase tracking-[0.12em] text-butter"
-                  >
-                    Open studio <ArrowUpRight size={12} />
-                  </Link>
-                </div>
-              </div>
-            </div>
-
-            <div className="mt-8 flex flex-wrap items-center gap-2 text-paper/70">
-              <span className="mono-label text-paper/40">Also included:</span>
-              {MOTIONS.slice(0, 11).map((m) => (
-                <span
-                  key={m.id}
-                  className="rounded-full border border-paper/20 px-2 py-1 font-mono text-[9px] uppercase tracking-[0.08em]"
-                >
-                  {m.id}
-                </span>
-              ))}
             </div>
           </div>
         </section>
 
-        {/* --------------------------------------------------------- exports */}
-        <section id="export" className="border-b-2 border-ink bg-paper">
-          <div className="mx-auto max-w-[1240px] px-4 py-20 sm:px-6 lg:py-24">
-            <div className="grid gap-12 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] lg:gap-16">
-              <div>
-                <SectionLabel>Ship it</SectionLabel>
-                <h2 className="text-[clamp(2.4rem,4.4vw,4rem)]">
-                  Export before
-                  <br />
-                  the meeting ends.
-                </h2>
-                <p className="mt-5 max-w-md text-[15px] leading-relaxed text-ink/70">
-                  Every export comes from the same scene graph. The Lottie is
-                  not a guess at the SVG — it&apos;s the same geometry and the
-                  same sampled transforms, verified in lottie-web.
-                </p>
+        {/* =========================================================================
+            SECTION 3: TICKER 1 (Role: section, Target Height: ~48px, Bg: #efece4)
+        ========================================================================= */}
+        <section
+          role="region"
+          aria-label="Capabilities ticker"
+          className="min-h-[120px] py-9 overflow-hidden border-b border-[#d7d4cb] bg-[#efece4] flex flex-col justify-center"
+        >
+          <div className="marquee flex items-center gap-8 whitespace-nowrap font-mono text-[12px] font-medium uppercase tracking-[0.1em] text-[#2c2823]">
+            {MARQUEE_ITEMS_1.concat(MARQUEE_ITEMS_1).map((item, i) => (
+              <span key={i} className="flex items-center gap-8">
+                <span>{item}</span>
+                <span className="h-1.5 w-1.5 rounded-full bg-[#4b63ff]" />
+              </span>
+            ))}
+          </div>
+        </section>
 
-                <div className="mt-7 rounded-2xl border-2 border-ink bg-ink p-1 shadow-[6px_6px_0_#FFC53D]">
-                  <div className="flex items-center justify-between px-3 py-2">
-                    <span className="font-mono text-[9px] uppercase tracking-[0.14em] text-paper/45">
-                      mascot.tsx
+        {/* =========================================================================
+            SECTION 4: TICKER 2 (Role: section, Target Height: ~48px, Bg: #efece4)
+        ========================================================================= */}
+        <section
+          role="region"
+          aria-label="Hackathon ticker"
+          className="min-h-[120px] py-9 overflow-hidden border-b border-[#d7d4cb] bg-[#efece4] flex flex-col justify-center"
+        >
+          <div className="marquee marquee-slow flex items-center gap-8 whitespace-nowrap font-mono text-[12px] font-medium uppercase tracking-[0.1em] text-[#6f6759]">
+            {MARQUEE_ITEMS_2.concat(MARQUEE_ITEMS_2).map((item, i) => (
+              <span key={i} className="flex items-center gap-8">
+                <span>{item}</span>
+                <span className="h-1.5 w-1.5 rounded-full bg-[#ffc53d]" />
+              </span>
+            ))}
+          </div>
+        </section>
+
+        {/* =========================================================================
+            SECTION 5: MANIFESTO & MOTION SHEET (Role: section, ~1325px, 2 Cols)
+        ========================================================================= */}
+        <section
+          id="moves"
+          role="region"
+          aria-label="Manifesto and 11 moves sheet"
+          className="border-b border-[#d7d4cb] bg-[#efece4] py-16 sm:py-20 lg:py-[108px]"
+        >
+          <div className="mx-auto max-w-[1140px] px-4 sm:px-6">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+              {/* Left Column: Manifesto Card (5 Cols) */}
+              <div className="lg:col-span-5">
+                <div className="card card-xl rounded-[24px] border border-[#d7d4cb] bg-[#fefdf9] p-6 sm:p-8 shadow-sm">
+                  <div className="relative flex justify-center py-6 bg-[#efece4]/70 rounded-[17px] border border-[#d7d4cb] mb-6">
+                    <span className="absolute -top-3 right-4 panel-pill radius-xs px-3 py-1 font-mono text-[11px] font-bold text-[#4b63ff] bg-[#fefdf9] shadow-sm">
+                      That&apos;s Ani
                     </span>
-                    <span className="flex gap-1">
-                      <span className="h-2 w-2 rounded-full bg-coral" />
-                      <span className="h-2 w-2 rounded-full bg-butter" />
-                      <span className="h-2 w-2 rounded-full bg-mint" />
-                    </span>
+                    <MascotStill
+                      spec={DEMO_SPEC}
+                      motion="wave"
+                      className="w-[200px] h-[200px] drop-shadow-[0_4px_8px_rgba(40,34,22,0.1)]"
+                    />
                   </div>
-                  <pre className="scrollbar-thin overflow-x-auto rounded-xl bg-[#0f0e13] p-4 font-mono text-[11px] leading-[1.75] text-[#e8e2d5]">
-                    <code>
-                      <span className="text-[#8f88a0]">
-                        {"// "}
-                        {report.layerCount} layers · {report.lottieLabel} · 30fps
-                      </span>
-                      {"\n"}
-                      <span className="text-[#c9b6ff]">import</span> lottie{" "}
-                      <span className="text-[#c9b6ff]">from</span>{" "}
-                      <span className="text-[#ffc53d]">&quot;lottie-web&quot;</span>;
-                      {"\n"}
-                      <span className="text-[#c9b6ff]">import</span> mascot{" "}
-                      <span className="text-[#c9b6ff]">from</span>{" "}
-                      <span className="text-[#ffc53d]">
-                        &quot;./mochi-wave.json&quot;
-                      </span>
-                      ;{"\n\n"}
-                      lottie.loadAnimation({`{`}
-                      {"\n  "}container:{" "}
-                      <span className="text-[#6fd6a8]">
-                        document.querySelector(&quot;#mascot&quot;)
-                      </span>
-                      ,{"\n  "}renderer:{" "}
-                      <span className="text-[#ffc53d]">&quot;svg&quot;</span>,
-                      {"\n  "}loop:{" "}
-                      <span className="text-[#ff5a45]">true</span>,{"\n  "}
-                      autoplay: <span className="text-[#ff5a45]">true</span>,
-                      {"\n  "}animationData: mascot,{"\n"}
-                      {`}`});
-                    </code>
-                  </pre>
-                </div>
 
-                <div className="mt-5 flex flex-wrap gap-2">
-                  <span className="chip bg-mint">
-                    <Check size={12} strokeWidth={3} /> Verified in lottie-web
-                  </span>
-                  <span className="chip bg-white">
-                    {report.boneCount} bones · {report.layerCount} layers
-                  </span>
-                  <span className="chip bg-white">No runtime calls</span>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-2 gap-3 sm:gap-4">
-                {FORMATS.map((format, i) => (
-                  <div
-                    key={format.name}
-                    className={`card flex flex-col justify-between p-4 sm:p-5 ${i === 0 ? "sm:-rotate-1" : ""} ${i === 3 ? "sm:rotate-1" : ""}`}
-                  >
-                    <div className="flex items-start justify-between gap-3">
-                      <span
-                        className={`flex h-10 w-10 items-center justify-center rounded-xl border-2 border-ink ${format.color}`}
-                      >
-                        <format.icon size={18} strokeWidth={2.4} />
-                      </span>
-                      <span className="mono-label text-right">
-                        {format.note}
-                      </span>
-                    </div>
-                    <div className="mt-5 sm:mt-8">
-                      <h3 className="text-lg sm:text-xl">{format.name}</h3>
-                      <p className="mt-1 font-mono text-[10px] uppercase tracking-[0.08em] text-ink-soft">
-                        {format.detail}
-                      </p>
-                    </div>
+                  <p className="type-body-xs uppercase tracking-[1.1px] text-[#6f6759] flex items-center gap-2 mb-2">
+                    <span className="inline-block h-2 w-2 rounded-full bg-[#4b63ff]" />
+                    THE ANITOON MANIFESTO
+                  </p>
+                  <p className="type-body-lg-17 text-[#4b63ff] font-bold mb-2">
+                    Living Vector Mascot Compiler
+                  </p>
+                  <h3 className="type-h2 text-[#111111] mb-2">
+                    Why real bones beat raster stickers.
+                  </h3>
+                  <p className="type-body-lg-19 text-[#111111] mb-4">
+                    100% Client-Side Vector Generation · Zero API Delay
+                  </p>
+                  <div className="space-y-4 text-[#2c2823] type-body">
+                    <p>
+                      Generative AI gave us millions of static pictures of mascots: flat bitmaps that blur when scaled, stay frozen in one posture, and require monthly credit top-ups.
+                    </p>
+                    <p>
+                      Anitoon compiles real vector bones. The character has limbs, eyes, a spine, and an 18-bone rig with authored motion. When you need it to wave, it waves. When you need it in your mobile app, it exports as a single Lottie file.
+                    </p>
+                    <p className="font-medium text-[#111111]">
+                      No raster artifacts. No keyframe misery. No runtime bill.
+                    </p>
                   </div>
-                ))}
-                <div className="sm:col-span-2 rounded-2xl border-2 border-dashed border-ink/30 p-5">
-                  <div className="flex flex-wrap items-center justify-between gap-3">
-                    <div>
-                      <p className="font-display text-lg font-bold">
-                        The zip a developer can actually open.
-                      </p>
-                      <p className="mt-1 text-[13px] leading-snug text-ink/60">
-                        JSON, SVG, PNG, a typed React component, README, and a
-                        preview page with the animation inlined.
-                      </p>
-                    </div>
-                    <Link href="/studio" className="btn btn-sm">
-                      Build yours <MoveRight size={13} />
+
+                  <div className="mt-6 pt-6 border-t border-[#d7d4cb] flex items-center justify-between">
+                    <span className="type-body-xs text-[#6f6759]">100% Client-Side Engine</span>
+                    <Link
+                      href="/studio"
+                      className="btn btn-primary min-h-[38px] font-mono text-[11px]"
+                    >
+                      Open Studio <ArrowUpRight size={13} />
                     </Link>
                   </div>
                 </div>
               </div>
-            </div>
-          </div>
-        </section>
 
-        {/* --------------------------------------------------------- gallery */}
-        <section id="gallery" className="border-b-2 border-ink bg-paper-2/40">
-          <div className="mx-auto max-w-[1240px] px-4 py-20 sm:px-6 lg:py-24">
-            <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
-              <div>
-                <SectionLabel>The gallery</SectionLabel>
-                <h2 className="text-[clamp(2.4rem,4.4vw,4rem)]">
-                  Eight mascots walk
-                  <br />
-                  into a brand.
-                </h2>
-              </div>
-              <p className="max-w-sm text-[15px] leading-relaxed text-ink/65">
-                Deterministic specs, no renders, no retouching. Open any one in
-                the studio to change a color, a face, or an entire species.
-              </p>
-            </div>
-
-            <div className="mt-10 grid grid-cols-2 gap-4 lg:grid-cols-4">
-              {GALLERY.map((item, i) => (
-                <Link
-                  key={item.spec.name}
-                  href={`/studio?m=${encodeSpec(item.spec)}`}
-                  className={`group overflow-hidden rounded-2xl border-2 border-ink bg-white shadow-[4px_4px_0_#17151C] transition-transform duration-200 hover:-translate-y-1.5 ${
-                    i % 3 === 0 ? "lg:-rotate-1" : i % 3 === 1 ? "lg:rotate-[0.5deg]" : ""
-                  }`}
-                >
-                  <div
-                    className="relative border-b-2 border-ink"
-                    style={{ background: item.color }}
-                  >
-                    <div className="absolute inset-0 halftone opacity-30" />
-                    <MascotStill
-                      spec={item.spec}
-                      motion={i % 2 === 0 ? "wave" : "idle"}
-                      at={0.25 + (i % 3) * 0.06}
-                      shadow="none"
-                      className="relative z-10 p-1 transition-transform duration-300 group-hover:scale-[1.03]"
-                    />
-                    <span className="absolute left-2 top-2 z-20 rounded-full border-2 border-ink bg-white px-2 py-0.5 font-mono text-[8px] uppercase tracking-[0.1em]">
-                      {item.spec.species}
-                    </span>
-                  </div>
-                  <div className="flex items-center justify-between gap-2 p-3">
-                    <div className="min-w-0">
-                      <p className="font-display text-xl font-extrabold leading-none">
-                        {item.spec.name}
-                      </p>
-                      <p className="mt-1 line-clamp-2 font-mono text-[8.5px] uppercase leading-tight tracking-[0.09em] text-ink-soft">
-                        {item.spec.tagline}
-                      </p>
-                    </div>
-                    <ArrowUpRight
-                      size={16}
-                      strokeWidth={2.6}
-                      className="shrink-0 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
-                    />
-                  </div>
-                </Link>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* ------------------------------------------------------------- faq */}
-        <section id="faq" className="border-b-2 border-ink bg-paper">
-          <div className="mx-auto grid max-w-[1240px] gap-10 px-4 py-20 sm:px-6 lg:grid-cols-[minmax(0,0.7fr)_minmax(0,1.3fr)] lg:py-24">
-            <div>
-              <SectionLabel>FAQ</SectionLabel>
-              <h2 className="text-[clamp(2.4rem,4.4vw,4rem)]">
-                Questions,
-                <br />
-                answered plainly.
-              </h2>
-              <p className="mt-5 max-w-xs text-[14px] leading-relaxed text-ink/60">
-                Still stuck? The studio has a one-click “Surprise me” and no
-                way to break the renderer. That counts as support.
-              </p>
-            </div>
-            <div className="divide-y-2 divide-ink/10 border-y-2 border-ink/10">
-              {FAQ.map((item, i) => (
-                <details key={item.q} className="group" open={i === 0}>
-                  <summary className="flex cursor-pointer list-none items-center justify-between gap-4 py-4 [&::-webkit-details-marker]:hidden">
-                    <span className="font-display text-lg font-bold leading-tight sm:text-xl">
-                      {item.q}
-                    </span>
-                    <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full border-2 border-ink bg-white transition-transform group-open:rotate-45">
-                      <span className="relative block h-3 w-3">
-                        <span className="absolute left-1/2 top-0 h-3 w-0.5 -translate-x-1/2 bg-ink" />
-                        <span className="absolute left-0 top-1/2 h-0.5 w-3 -translate-y-1/2 bg-ink" />
-                      </span>
-                    </span>
-                  </summary>
-                  <p className="max-w-[58ch] pb-5 pr-8 text-[14px] leading-relaxed text-ink/65">
-                    {item.a}
+              {/* Right Column: 11-Move Motion Sheet (7 Cols) */}
+              <div className="lg:col-span-7">
+                <div className="mb-6">
+                  <p className="type-body-xs uppercase tracking-[1.1px] text-[#6f6759] flex items-center gap-2 mb-1">
+                    <span className="inline-block h-2 w-2 rounded-full bg-[#6fd6a8]" />
+                    11-MOVE CONTACT SHEET
                   </p>
-                </details>
-              ))}
+                  <h3 className="type-h2-48 text-[#111111]">
+                    Authored moves. Ready to ship.
+                  </h3>
+                  <p className="type-body text-[#2c2823] mt-2">
+                    Every mascot compiles with 11 authored motion curves. Click any pose to load it in the studio.
+                  </p>
+                </div>
+
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3.5">
+                  {MOTIONS.map((m) => {
+                    const poseSvg = renderStill(DEMO_SPEC, {
+                      width: 140,
+                      height: 140,
+                      motion: m.id,
+                      at: 0.35,
+                      shadow: "none",
+                    });
+                    return (
+                      <Link
+                        key={m.id}
+                        href={`/studio?move=${m.id}`}
+                        className="card group rounded-[17px] border border-[#d7d4cb] bg-[#fefdf9] p-3 text-center transition hover:border-[#4b63ff] hover:shadow-md flex flex-col items-center justify-between min-h-[180px]"
+                      >
+                        <div
+                          className="w-[110px] h-[110px] flex items-center justify-center py-1 group-hover:scale-105 transition-transform"
+                          dangerouslySetInnerHTML={{ __html: poseSvg }}
+                        />
+                        <div className="w-full border-t border-[#d7d4cb]/70 pt-2 flex items-center justify-between px-1">
+                          <span className="type-body-xs font-semibold uppercase text-[#111111]">
+                            {m.name}
+                          </span>
+                          <span className="type-body-xs-12 text-[#6f6759]">
+                            {m.duration}s
+                          </span>
+                        </div>
+                      </Link>
+                    );
+                  })}
+                </div>
+              </div>
             </div>
           </div>
         </section>
 
-        {/* -------------------------------------------------------- final cta */}
-        <section className="bg-paper px-4 py-16 sm:px-6 lg:py-20">
-          <div className="relative mx-auto max-w-[1240px] overflow-hidden rounded-[28px] border-2 border-ink bg-blue text-white shadow-[10px_10px_0_#17151C]">
-            <div className="pointer-events-none absolute inset-0 halftone opacity-20" />
-            <div className="relative grid items-center gap-8 p-6 sm:p-10 lg:grid-cols-[minmax(0,1fr)_340px] lg:p-12">
+        {/* =========================================================================
+            SECTION 6: SHIPS WITH (Role: section, Target Height: ~223px, Bg: #efece4)
+        ========================================================================= */}
+        <section
+          role="region"
+          aria-label="Capabilities and export formats"
+          className="border-b border-[#d7d4cb] bg-[#efece4] py-14 sm:py-16"
+        >
+          <div className="mx-auto max-w-[1140px] px-4 sm:px-6">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-8">
               <div>
-                <p className="eyebrow mb-4 text-white/60">
-                  WeMakeDevs × Wispr Flow · Track 2
+                <p className="type-body-xs uppercase tracking-[1.1px] text-[#6f6759] flex items-center gap-2 mb-1">
+                  <span className="inline-block h-2 w-2 rounded-full bg-[#4b63ff]" />
+                  SHIPS WITH EVERY MASCOT
                 </p>
-                <h2 className="text-[clamp(2.6rem,5vw,4.6rem)] text-white">
-                  Give your brand
-                  <br />
-                  a body.
-                </h2>
-                <p className="mt-4 max-w-lg text-[15px] leading-relaxed text-white/75">
-                  One sentence in. A rigged, waving, exportable mascot out.
-                  Free, instant, and yours to keep.
-                </p>
-                <div className="mt-6 max-w-xl">
-                  <PromptForm id="cta-prompt" />
-                </div>
-                <p className="mt-3 font-mono text-[10px] uppercase tracking-[0.12em] text-white/50">
-                  No sign-up · local-first · works on your phone
-                </p>
+                <h3 className="type-body-xl-24 text-[#111111]">
+                  Zero-lock-in exports that your engineers will thank you for.
+                </h3>
               </div>
-              <div className="relative mx-auto w-full max-w-[300px]">
-                <div className="rotate-2 rounded-2xl border-2 border-ink bg-white p-2 shadow-[6px_6px_0_#17151C]">
-                  <MascotStill
-                    spec={DEMO_SPEC}
-                    motion="celebrate"
-                    at={0.3}
-                    shadow="soft"
-                  />
+              <span className="type-body-xs text-[#6f6759] font-mono">
+                Lottie · SVG · PNG · React TSX
+              </span>
+            </div>
+
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
+              {CAPABILITIES.map((c) => {
+                const Icon = c.icon;
+                return (
+                  <div
+                    key={c.name}
+                    className="panel-tactile radius-md border border-[#d7d4cb] bg-[#fefdf9] p-3.5 flex flex-col justify-between min-h-[120px]"
+                  >
+                    <div className="flex items-center justify-between">
+                      <Icon size={18} className="text-[#4b63ff]" />
+                      <span className="type-body-xs text-[#6f6759]">0 deps</span>
+                    </div>
+                    <div>
+                      <p className="type-body-15 font-semibold text-[#111111]">{c.name}</p>
+                      <p className="type-body-xs text-[#6f6759] mt-0.5 truncate">{c.note}</p>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </section>
+
+        {/* =========================================================================
+            SECTION 7: WHERE MASCOTS SHIP & FAQ (Role: section, ~1204px, 2 Cols)
+        ========================================================================= */}
+        <section
+          id="how"
+          role="region"
+          aria-label="Where mascots ship and FAQ"
+          className="border-b border-[#d7d4cb] bg-[#efece4] py-16 sm:py-20 lg:py-[108px]"
+        >
+          <div className="mx-auto max-w-[1140px] px-4 sm:px-6">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
+              {/* Left Column: Where Mascots Ship (6 Cols) */}
+              <div className="lg:col-span-6">
+                <p className="type-body-xs uppercase tracking-[1.1px] text-[#6f6759] flex items-center gap-2 mb-2">
+                  <span className="inline-block h-2 w-2 rounded-full bg-[#ff5a45]" />
+                  DEPLOYMENT TOUCHPOINTS
+                </p>
+                <h3 className="type-h2-48 text-[#111111] mb-8">
+                  Where mascots ship in real products.
+                </h3>
+
+                <div className="divide-y divide-[#d7d4cb]">
+                  {WHERE_SHIPS.map((item) => (
+                    <div
+                      key={item.n}
+                      className="py-6 first:pt-0 last:pb-0 group transition-colors"
+                    >
+                      <div className="flex items-start gap-4">
+                        <span className="panel-tactile radius-xs px-2.5 py-1 font-mono text-[11px] font-bold text-[#4b63ff] bg-[#fefdf9]">
+                          {item.n}
+                        </span>
+                        <div>
+                          <h4 className="type-body-xl-22 text-[#111111] mb-1.5">
+                            {item.title}
+                          </h4>
+                          <p className="type-body text-[#2c2823]">{item.copy}</p>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
                 </div>
-                <span className="absolute -left-3 -top-3 -rotate-6 rounded-full border-2 border-ink bg-butter px-2.5 py-1 font-mono text-[9px] uppercase tracking-[0.1em] text-ink">
-                  Ready in 0.4s
+              </div>
+
+              {/* Right Column: FAQ (6 Cols) */}
+              <div id="faq" className="lg:col-span-6">
+                <p className="type-body-xs uppercase tracking-[1.1px] text-[#6f6759] flex items-center gap-2 mb-2">
+                  <span className="inline-block h-2 w-2 rounded-full bg-[#ffc53d]" />
+                  COMMONLY ASKED
+                </p>
+                <h3 className="type-h2-48 text-[#111111] mb-8">
+                  Frequently asked questions.
+                </h3>
+
+                <div className="space-y-3.5">
+                  {FAQ.map((item) => (
+                    <div
+                      key={item.q}
+                      className="card rounded-[17px] border border-[#d7d4cb] bg-[#fefdf9] p-5 shadow-sm"
+                    >
+                      <h4 className="type-body-16 font-semibold text-[#111111] mb-2">
+                        {item.q}
+                      </h4>
+                      <p className="type-body text-[#2c2823]">{item.a}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* =========================================================================
+            SECTION 8: CTA & FOOTER (Role: section, Target Height: ~747px, Bg: #efece4)
+        ========================================================================= */}
+        <section
+          role="region"
+          aria-label="Call to action and footer"
+          className="bg-[#efece4] pt-16 pb-12 sm:pt-20 sm:pb-16"
+        >
+          <div className="mx-auto max-w-[1140px] px-4 sm:px-6">
+            {/* Big CTA Card */}
+            <div className="card card-2xl rounded-[28px] border border-[#d7d4cb] bg-[#fefdf9] p-8 sm:p-14 text-center shadow-md mb-16 relative overflow-hidden">
+              <div className="pointer-events-none absolute -right-8 -top-8 z-0 opacity-40">
+                <Image
+                  src="/art/prop-star.webp"
+                  alt=""
+                  width={130}
+                  height={130}
+                  unoptimized
+                />
+              </div>
+              <div className="pointer-events-none absolute -left-8 -bottom-8 z-0 opacity-40">
+                <Image
+                  src="/art/prop-spark.webp"
+                  alt=""
+                  width={130}
+                  height={130}
+                  unoptimized
+                />
+              </div>
+
+              {/* Watermark 2026 */}
+              <div
+                aria-hidden="true"
+                className="pointer-events-none absolute -bottom-24 left-1/2 -translate-x-1/2 select-none overflow-hidden opacity-[0.025]"
+              >
+                <span className="type-heading-300 text-[#111111]">2026</span>
+              </div>
+
+              <div className="relative z-10 flex flex-col items-center">
+                <p className="type-body-xs uppercase tracking-[1.1px] text-[#4b63ff] font-semibold mb-3">
+                  WEMAKEDEVS × WISPR FLOW · TRACK 2: NO-CODE
+                </p>
+                <h2 className="type-h2-60 text-[#111111] max-w-[720px] mb-4">
+                  Give your brand a face worth remembering.
+                </h2>
+                <p className="type-body-lg text-[#2c2823] max-w-[560px] mb-8">
+                  Type a sentence or voice your idea. Anitoon compiles a living vector character in seconds with 11 real moves.
+                </p>
+
+                <PromptForm id="cta-prompt" />
+              </div>
+            </div>
+
+            {/* Footer */}
+            <footer className="border-t border-[#d7d4cb] pt-8">
+              <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+                <div>
+                  <Logo />
+                  <p className="type-body-xs text-[#6f6759] mt-2">
+                    Built for the Wispr Challenge — Track 2: No-Code. Vectors, not pixels.
+                  </p>
+                </div>
+
+                <div className="flex flex-wrap items-center gap-4 sm:gap-6">
+                  <Link
+                    href="/#work"
+                    className="type-link text-[#2c2823] hover:text-[#4b63ff] min-h-[44px] min-w-[44px] px-3 py-2.5 inline-flex items-center"
+                  >
+                    Work
+                  </Link>
+                  <Link
+                    href="/studio"
+                    className="type-link text-[#2c2823] hover:text-[#4b63ff] min-h-[44px] min-w-[44px] px-3 py-2.5 inline-flex items-center"
+                  >
+                    Studio
+                  </Link>
+                  <Link
+                    href="/#moves"
+                    className="type-link text-[#2c2823] hover:text-[#4b63ff] min-h-[44px] min-w-[44px] px-3 py-2.5 inline-flex items-center"
+                  >
+                    Moves
+                  </Link>
+                  <Link
+                    href="/#how"
+                    className="type-link text-[#2c2823] hover:text-[#4b63ff] min-h-[44px] min-w-[44px] px-3 py-2.5 inline-flex items-center"
+                  >
+                    How it works
+                  </Link>
+                  <Link
+                    href="/#faq"
+                    className="type-link text-[#2c2823] hover:text-[#4b63ff] min-h-[44px] min-w-[44px] px-3 py-2.5 inline-flex items-center"
+                  >
+                    FAQ
+                  </Link>
+                  <a
+                    href="https://github.com/pranavk429/anitoon"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="type-link text-[#2c2823] hover:text-[#4b63ff] min-h-[44px] min-w-[44px] px-3 py-2.5 inline-flex items-center gap-1"
+                  >
+                    GitHub <ArrowUpRight size={13} />
+                  </a>
+                </div>
+              </div>
+
+              <div className="mt-8 flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-t border-[#d7d4cb]/60 pt-4">
+                <span className="type-body-xs text-[#6f6759]">
+                  © 2026 Anitoon. No fake logos, no fake customers.
+                </span>
+                <span className="type-body-xs-12 text-[#6f6759]">
+                  18 bones · 11 moves · Lottie · SVG · PNG · React TSX
                 </span>
               </div>
-            </div>
+            </footer>
           </div>
         </section>
       </main>
-
-      {/* ----------------------------------------------------------- footer */}
-      <footer className="border-t-2 border-ink bg-paper-2/60">
-        <div className="mx-auto grid max-w-[1240px] gap-8 px-4 py-12 sm:px-6 md:grid-cols-[1.2fr_1fr_1fr]">
-          <div>
-            <Logo />
-            <p className="mt-3 max-w-xs text-[13px] leading-relaxed text-ink/60">
-              A vector mascot compiler for people who have a brand voice but
-              not a motion designer.
-            </p>
-            <p className="mt-4 font-mono text-[9px] uppercase tracking-[0.14em] text-ink-soft">
-              Built for the Wispr Challenge — Track 2: No-Code
-            </p>
-          </div>
-          <div>
-            <p className="mono-label mb-3">Product</p>
-            <ul className="space-y-2 text-sm">
-              <li>
-                <Link href="/studio" className="hover:underline">
-                  Studio
-                </Link>
-              </li>
-              <li>
-                <Link href="/#how" className="hover:underline">
-                  How it works
-                </Link>
-              </li>
-              <li>
-                <Link href="/#moves" className="hover:underline">
-                  Move library
-                </Link>
-              </li>
-              <li>
-                <Link href="/#gallery" className="hover:underline">
-                  Gallery
-                </Link>
-              </li>
-            </ul>
-          </div>
-          <div>
-            <p className="mono-label mb-3">Details</p>
-            <ul className="space-y-2 text-sm">
-              <li>
-                <Link href="/#faq" className="hover:underline">
-                  FAQ
-                </Link>
-              </li>
-              <li>
-                <Link href="/#export" className="hover:underline">
-                  Exports
-                </Link>
-              </li>
-              <li>
-                <Link href="/studio?prompt=surprise+me" className="hover:underline">
-                  Surprise me
-                </Link>
-              </li>
-            </ul>
-          </div>
-        </div>
-        <div className="border-t border-ink/15">
-          <div className="mx-auto flex max-w-[1240px] flex-wrap items-center justify-between gap-2 px-4 py-4 font-mono text-[9px] uppercase tracking-[0.12em] text-ink-soft sm:px-6">
-            <span>© 2026 Toonify. No fake logos, no fake customers.</span>
-            <span>Made from vectors, vectors, and more vectors.</span>
-          </div>
-        </div>
-      </footer>
-    </>
+    </div>
   );
 }

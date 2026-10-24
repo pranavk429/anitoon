@@ -591,7 +591,7 @@ export function randomSpec(seed = Math.floor(Math.random() * 2 ** 31)): MascotSp
 
 export function parsePrompt(promptRaw: string, seedOverride?: number): ParsedPrompt {
   const prompt = promptRaw.trim();
-  const seed = seedOverride ?? hashString(prompt.toLowerCase() || "toonify");
+  const seed = seedOverride ?? hashString(prompt.toLowerCase() || "anitoon");
   const rand = mulberry32(seed);
   const lower = prompt.toLowerCase();
 

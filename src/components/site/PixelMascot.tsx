@@ -7,7 +7,7 @@ import { svgDataUrl } from "@/lib/mascot/svg";
 /**
  * Demonstrates what a raster mascot really is: the same source rendered once at
  * icon size and upscaled. Generated in-browser from the engine's SVG — no image
- * assets ship with Toonify.
+ * assets ship with Anitoon.
  */
 export function PixelMascot({
   svg,

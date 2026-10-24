@@ -104,7 +104,9 @@ export function MascotStage({
   const timeRef = useRef(startTime);
   const lastRef = useRef<number | null>(null);
   const onTimeRef = useRef(onTime);
-  onTimeRef.current = onTime;
+  useEffect(() => {
+    onTimeRef.current = onTime;
+  }, [onTime]);
 
   const reducedRef = useRef(false);
   useEffect(() => {

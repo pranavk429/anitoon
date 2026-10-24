@@ -1,6 +1,6 @@
 import { type Build, type Shape } from "./art";
 import { MOTION_BY_ID, samplePose, type MotionId, type Pose } from "./animate";
-import { decompose, pathToD, type Mat, type Path } from "./geometry";
+import { decompose, type Mat, type Path } from "./geometry";
 
 /**
  * Compile the mascot rig into a Lottie (bodymovin) document.
@@ -320,7 +320,7 @@ export function compileLottie(
       op: count,
       st: 0,
       bm: 0,
-      cl: "toonify",
+      cl: "anitoon",
       hd: false,
     });
   }
@@ -344,12 +344,12 @@ export function compileLottie(
       },
     ],
     meta: {
-      g: "Toonify vector mascot compiler",
-      a: "Toonify",
-      k: `toonify-${motion.id}`,
+      g: "Anitoon vector mascot compiler",
+      a: "Anitoon",
+      k: `anitoon-${motion.id}`,
       d: `Layered vector rig, ${build.layers.length} bones, ${count} frames at ${fps}fps.`,
     },
-    toonify: {
+    anitoon: {
       motion: motion.id,
       name: motion.name,
       duration: motion.duration,
@@ -366,7 +366,7 @@ export function compileAllLottie(build: Build): Record<string, unknown> {
   }
   return {
     v: "5.12.2",
-    generator: "Toonify",
+    generator: "Anitoon",
     spec: build.spec,
     animations,
   };

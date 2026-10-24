@@ -56,8 +56,8 @@ import { ShipPanel, type ExportFormat } from "./ShipPanel";
 import { ExportModal } from "./ExportModal";
 import { RecentsDrawer } from "./RecentsDrawer";
 
-const SPEC_KEY = "toonify.spec.v1";
-const RECENTS_KEY = "toonify.recents.v1";
+const SPEC_KEY = "anitoon.spec.v1";
+const RECENTS_KEY = "anitoon.recents.v1";
 const DEFAULT_PROMPT = "A sunny orange cat named Mochi with a blue scarf";
 
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
@@ -163,7 +163,7 @@ export function StudioClient() {
           const loaded = parsed
             .map((code) => (typeof code === "string" ? decodeSpec(code) : null))
             .filter((value): value is MascotSpec => Boolean(value));
-          setRecents(loaded);
+          queueMicrotask(() => setRecents(loaded));
         }
       } catch {
         /* ignore malformed recents */
@@ -181,7 +181,7 @@ export function StudioClient() {
   // Autosave the working spec, debounced. Sharing still uses the URL.
   useEffect(() => {
     if (!hydrated) return;
-    setSaveState("saving");
+    queueMicrotask(() => setSaveState("saving"));
     const timer = setTimeout(() => {
       try {
         window.localStorage.setItem(SPEC_KEY, encodeSpec(spec));
@@ -421,9 +421,9 @@ export function StudioClient() {
 
   return (
     <>
-      <header className="sticky top-0 z-40 border-b-2 border-ink bg-paper/92 backdrop-blur-md">
+      <header className="sticky top-0 z-40 border-b border-[#d7d4cb] bg-[#efece4]/92 backdrop-blur-md">
         <div className="mx-auto flex h-[64px] max-w-[1600px] items-center gap-2 px-2 sm:px-4">
-          <Link href="/" aria-label="Toonify home" className="shrink-0">
+          <Link href="/" aria-label="Anitoon home" className="shrink-0">
             <span className="sm:hidden">
               <Logo markOnly />
             </span>
@@ -593,7 +593,7 @@ export function StudioClient() {
       {/* mobile tab bar */}
       <nav
         aria-label="Studio sections"
-        className="fixed bottom-3 left-1/2 z-50 w-[calc(100%-24px)] max-w-[420px] -translate-x-1/2 rounded-full border-2 border-ink bg-white p-1 shadow-[4px_4px_0_#17151C] lg:hidden"
+        className="fixed bottom-3 left-1/2 z-50 w-[calc(100%-24px)] max-w-[420px] -translate-x-1/2 rounded-full border border-[#d7d4cb] bg-[#fefdf9] p-1.5 shadow-md lg:hidden"
       >
         <div className="grid grid-cols-3 gap-1">
           {(
@@ -612,11 +612,11 @@ export function StudioClient() {
               }}
               aria-pressed={tab === value}
               className={clsx(
-                "flex items-center justify-center gap-1.5 rounded-full px-2 py-2 font-mono text-[10px] uppercase tracking-[0.08em]",
-                tab === value ? "bg-ink text-white" : "text-ink",
+                "flex min-h-[44px] items-center justify-center gap-1.5 rounded-full px-2 py-2 font-mono text-[11px] uppercase tracking-[0.08em] transition-colors",
+                tab === value ? "bg-[#4b63ff] text-white" : "text-[#2c2823] hover:text-[#111111]",
               )}
             >
-              <Icon size={13} />
+              <Icon size={14} />
               {label}
             </button>
           ))}

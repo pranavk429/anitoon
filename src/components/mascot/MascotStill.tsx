@@ -42,7 +42,7 @@ export function MascotStill({
     rig: showRig,
     className: svgClassName,
     title: label ?? `${spec.name} the ${spec.species}`,
-    desc: `Vector ${spec.species} mascot by Toonify.`,
+    desc: `Vector ${spec.species} mascot by Anitoon.`,
   });
   return (
     <div

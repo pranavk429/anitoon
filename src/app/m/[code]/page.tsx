@@ -18,18 +18,18 @@ export async function generateMetadata({
   if (!spec) return { title: "Mascot not found" };
   return {
     title: `${spec.name} — ${spec.tagline}`,
-    description: `A ${spec.vibe} ${spec.species} mascot made with Toonify. ${spec.tagline}. Play the 11 authored moves or remix it.`,
+    description: `A ${spec.vibe} ${spec.species} mascot made with Anitoon. ${spec.tagline}. Play the 11 authored moves or remix it.`,
     alternates: { canonical: `/m/${code}` },
     openGraph: {
       title: `${spec.name} — ${spec.tagline}`,
-      description: `A ${spec.vibe} ${spec.species} mascot made with Toonify.`,
+      description: `A ${spec.vibe} ${spec.species} mascot made with Anitoon.`,
       url: `/m/${code}`,
       type: "website",
     },
     twitter: {
       card: "summary_large_image",
       title: `${spec.name} — ${spec.tagline}`,
-      description: `A ${spec.vibe} ${spec.species} mascot made with Toonify.`,
+      description: `A ${spec.vibe} ${spec.species} mascot made with Anitoon.`,
     },
   };
 }

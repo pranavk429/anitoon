@@ -82,8 +82,10 @@ export function ExportModal({
     if (!open) return;
     let cancelled = false;
     const container = containerRef.current;
-    setLoaded(false);
-    setPlaying(true);
+    queueMicrotask(() => {
+      setLoaded(false);
+      setPlaying(true);
+    });
     if (!container) return;
     container.innerHTML = "";
     import("lottie-web")
@@ -128,7 +130,7 @@ export function ExportModal({
 
   return createPortal(
     <div
-      className="fixed inset-0 z-[70] flex items-center justify-center bg-ink/55 p-3 backdrop-blur-sm sm:p-6"
+      className="fixed inset-0 z-[70] flex items-center justify-center bg-[#111111]/50 p-3 backdrop-blur-sm sm:p-6"
       role="presentation"
       onMouseDown={(e) => {
         if (e.target === e.currentTarget) onClose();
@@ -139,26 +141,26 @@ export function ExportModal({
         aria-modal="true"
         aria-labelledby="export-title"
         aria-describedby="export-desc"
-        className="relative max-h-[94vh] w-full max-w-[980px] overflow-y-auto rounded-2xl border-2 border-ink bg-paper shadow-[10px_10px_0_#17151C]"
+        className="relative max-h-[94vh] w-full max-w-[980px] overflow-y-auto rounded-[24px] border border-[#d7d4cb] bg-[#efece4] shadow-xl"
       >
-        <div className="sticky top-0 z-10 flex items-center justify-between gap-3 border-b-2 border-ink bg-paper/95 px-4 py-3 backdrop-blur">
+        <div className="sticky top-0 z-10 flex items-center justify-between gap-3 border-b border-[#d7d4cb] bg-[#efece4]/95 px-5 py-3.5 backdrop-blur">
           <div>
-            <p className="mono-label">Export · preview</p>
-            <h2 id="export-title" className="font-display text-xl font-extrabold">
+            <p className="mono-label text-[10px]">Export · preview</p>
+            <h2 id="export-title" className="font-display text-xl font-extrabold text-[#111111]">
               {spec.name} · {def.name}
             </h2>
           </div>
           <div className="flex items-center gap-2">
             <span
               className={clsx(
-                "chip !py-1.5 text-[9px]",
-                loaded ? "bg-mint" : "bg-white",
+                "chip !py-1 text-[9px] min-h-[28px]",
+                loaded ? "bg-[#6fd6a8] text-[#111111]" : "bg-[#fefdf9]",
               )}
             >
               <span
                 className={clsx(
                   "h-1.5 w-1.5 rounded-full",
-                  loaded ? "bg-ink" : "bg-coral blink-dot",
+                  loaded ? "bg-[#111111]" : "bg-[#ff5a45] blink-dot",
                 )}
               />
               {loaded ? "lottie-web ok" : "loading"}
@@ -167,7 +169,7 @@ export function ExportModal({
               ref={closeRef}
               type="button"
               onClick={onClose}
-              className="flex h-8 w-8 items-center justify-center rounded-full border-2 border-ink bg-white hover:bg-coral"
+              className="flex h-8 w-8 items-center justify-center rounded-full border border-[#d7d4cb] bg-[#fefdf9] text-[#111111] hover:bg-[#e2d8c6]"
               aria-label="Close export preview"
             >
               <X size={15} />
@@ -176,10 +178,10 @@ export function ExportModal({
         </div>
 
         <div className="grid gap-0 md:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)]">
-          <div className="min-w-0 border-b-2 border-ink p-3 md:border-b-0 md:border-r-2">
-            <div className="mb-2 flex items-center justify-between">
-              <span className="mono-label flex items-center gap-1.5">
-                <Film size={11} /> Lottie render
+          <div className="min-w-0 border-b border-[#d7d4cb] p-4 md:border-b-0 md:border-r">
+            <div className="mb-2.5 flex items-center justify-between">
+              <span className="mono-label flex items-center gap-1.5 text-[10px]">
+                <Film size={12} className="text-[#4b63ff]" /> Lottie render
               </span>
               <div className="flex items-center gap-1">
                 {(["paper", "transparent", "ink"] as PreviewBg[]).map((b) => (
@@ -187,7 +189,7 @@ export function ExportModal({
                     key={b}
                     type="button"
                     onClick={() => setBg(b)}
-                    className="rounded-full border border-ink/20 px-1.5 py-0.5 font-mono text-[8px] uppercase tracking-[0.06em] hover:border-ink"
+                    className="rounded-full border border-[#d7d4cb] bg-[#fefdf9] px-2 py-0.5 font-mono text-[9px] uppercase tracking-[0.06em] text-[#111111] hover:border-[#4b63ff]"
                     aria-pressed={bg === b}
                   >
                     {b === "transparent" ? "none" : b}
@@ -197,11 +199,11 @@ export function ExportModal({
             </div>
             <div
               className={clsx(
-                "relative overflow-hidden rounded-xl border-2 border-ink",
-                bg === "paper" && "halftone bg-white",
+                "relative overflow-hidden rounded-[17px] border border-[#d7d4cb]",
+                bg === "paper" && "grid-paper bg-[#fefdf9]",
                 bg === "transparent" &&
-                  "bg-[repeating-conic-gradient(#e7ddc9_0%_25%,#fffdf7_0%_50%)] bg-[length:24px_24px]",
-                bg === "ink" && "bg-ink",
+                  "bg-[repeating-conic-gradient(#e2d8c6_0%_25%,#fefdf9_0%_50%)] bg-[length:24px_24px]",
+                bg === "ink" && "bg-[#111111]",
               )}
             >
               <div
@@ -211,20 +213,20 @@ export function ExportModal({
               />
               {!loaded && (
                 <div className="absolute inset-0 z-20 flex items-center justify-center">
-                  <Loader2 size={20} className="animate-spin text-ink/40" />
+                  <Loader2 size={22} className="animate-spin text-[#6f6759]" />
                 </div>
               )}
-              <div className="absolute bottom-2 left-2 z-20 flex items-center gap-1.5 rounded-full border border-ink bg-white/90 px-2 py-1 font-mono text-[8px] uppercase tracking-[0.1em]">
-                <span className="h-1.5 w-1.5 rounded-full bg-coral blink-dot" />
+              <div className="absolute bottom-2.5 left-2.5 z-20 flex items-center gap-1.5 rounded-full border border-[#d7d4cb] bg-[#fefdf9]/90 px-2.5 py-1 font-mono text-[9px] uppercase tracking-[0.1em] text-[#111111] shadow-sm">
+                <span className="h-1.5 w-1.5 rounded-full bg-[#ff5a45] blink-dot" />
                 {def.duration}s · 30fps
               </div>
             </div>
-            <div className="mt-2 flex items-center justify-between gap-2">
-              <div className="flex items-center gap-1.5">
+            <div className="mt-3 flex items-center justify-between gap-2">
+              <div className="flex items-center gap-2">
                 <button
                   type="button"
                   onClick={toggle}
-                  className="flex h-8 w-8 items-center justify-center rounded-full border-2 border-ink bg-blue text-white"
+                  className="flex h-8 w-8 items-center justify-center rounded-full border border-[#4b63ff] bg-[#4b63ff] text-white shadow-sm"
                   aria-label={playing ? "Pause preview" : "Play preview"}
                 >
                   {playing ? (
@@ -233,44 +235,44 @@ export function ExportModal({
                     <Play size={13} fill="currentColor" className="ml-0.5" />
                   )}
                 </button>
-                <span className="font-mono text-[9px] uppercase tracking-[0.08em] text-ink-soft">
+                <span className="font-mono text-[10px] uppercase tracking-[0.08em] text-[#6f6759]">
                   {formatBytes(size)} · {(animationData as { layers?: unknown[] }).layers?.length ?? 0}{" "}
                   layers
                 </span>
               </div>
-              <span className="chip !py-1 text-[8px] bg-white">
-                <Check size={9} strokeWidth={4} /> same rig as stage
+              <span className="chip !py-0.5 text-[9px] bg-[#fefdf9] min-h-[24px]">
+                <Check size={9} strokeWidth={3} className="text-[#4b63ff]" /> same rig as stage
               </span>
             </div>
-            <div className="mt-2 grid grid-cols-2 gap-1.5">
+            <div className="mt-3 grid grid-cols-2 gap-1.5">
               {MOTIONS.map((m) => (
                 <button
                   key={m.id}
                   type="button"
                   onClick={() => onMotion(m.id)}
                   className={clsx(
-                    "flex items-center justify-between rounded-lg border px-2 py-1 text-left font-mono text-[9px] uppercase tracking-[0.06em]",
+                    "flex min-h-[30px] items-center justify-between rounded-[8px] border px-2 py-1 text-left font-mono text-[9px] uppercase tracking-[0.06em] transition-colors",
                     motion === m.id
-                      ? "border-ink bg-ink text-white"
-                      : "border-ink/15 bg-white hover:border-ink",
+                      ? "border-[#4b63ff] bg-[#4b63ff] text-white"
+                      : "border-[#d7d4cb] bg-[#fefdf9] text-[#111111] hover:border-[#4b63ff]",
                   )}
                   aria-pressed={motion === m.id}
                 >
                   {m.name}
-                  <span className="opacity-60">{m.duration}s</span>
+                  <span className="opacity-70">{m.duration}s</span>
                 </button>
               ))}
             </div>
           </div>
 
-          <div className="min-w-0 p-4">
-            <p id="export-desc" className="break-words text-[13px] leading-relaxed text-ink/65">
+          <div className="min-w-0 p-5">
+            <p id="export-desc" className="break-words text-[13px] leading-relaxed text-[#2c2823]">
               This is the actual exported Lottie, loaded with lottie-web from a
               string — no server, no re-render. If it moves here, it will move
               on your site.
             </p>
 
-            <div className="mt-4 grid grid-cols-2 gap-1.5">
+            <div className="mt-4 grid grid-cols-2 gap-2">
               {(
                 [
                   ["lottie", "Lottie JSON", formatBytes(size)],
@@ -284,39 +286,39 @@ export function ExportModal({
                   type="button"
                   onClick={() => onDownload(fmt, false)}
                   disabled={Boolean(exporting)}
-                  className="flex min-w-0 flex-col items-start gap-1 rounded-xl border-2 border-ink bg-white p-2.5 text-left shadow-[2px_2px_0_#17151C] transition-transform hover:-translate-y-0.5 disabled:opacity-60"
+                  className="flex min-w-0 flex-col items-start gap-1 rounded-[13px] border border-[#d7d4cb] bg-[#fefdf9] p-3 text-left shadow-sm transition hover:border-[#4b63ff] disabled:opacity-60 min-h-[64px]"
                 >
-                  <Download size={14} />
-                  <span className="font-display text-sm font-bold leading-none">
+                  <Download size={14} className="text-[#4b63ff]" />
+                  <span className="font-display text-sm font-bold leading-none text-[#111111]">
                     {label}
                   </span>
-                  <span className="font-mono text-[8px] uppercase tracking-[0.06em] text-ink-soft">
+                  <span className="font-mono text-[9px] uppercase tracking-[0.06em] text-[#6f6759]">
                     {exporting === fmt ? "working…" : detail}
                   </span>
                 </button>
               ))}
             </div>
 
-            <div className="mt-4 rounded-xl border-2 border-dashed border-ink/25 bg-white/70 p-3">
-              <p className="mono-label mb-1.5">Share it</p>
-              <div className="space-y-1.5">
+            <div className="mt-4 rounded-[17px] border border-dashed border-[#d7d4cb] bg-[#fefdf9] p-3.5">
+              <p className="mono-label mb-2 text-[10px]">Share it</p>
+              <div className="space-y-2">
                 <button
                   type="button"
                   onClick={() => onCopy(studioUrl, "Studio link copied")}
-                  className="flex w-full min-w-0 items-center justify-between gap-2 rounded-lg border border-ink/20 bg-white px-2 py-1.5 text-left hover:border-ink"
+                  className="flex w-full min-w-0 items-center justify-between gap-2 rounded-[10px] border border-[#d7d4cb] bg-[#efece4]/40 px-2.5 py-2 text-left hover:border-[#4b63ff]"
                 >
-                  <span className="min-w-0 flex-1 truncate text-[10px]">{studioUrl}</span>
-                  <span className="shrink-0 font-mono text-[8px] uppercase">
+                  <span className="min-w-0 flex-1 truncate text-[11px] text-[#111111]">{studioUrl}</span>
+                  <span className="shrink-0 font-mono text-[9px] uppercase text-[#4b63ff]">
                     copy
                   </span>
                 </button>
                 <button
                   type="button"
                   onClick={() => onCopy(publicUrl, "Public link copied")}
-                  className="flex w-full min-w-0 items-center justify-between gap-2 rounded-lg border border-ink/20 bg-white px-2 py-1.5 text-left hover:border-ink"
+                  className="flex w-full min-w-0 items-center justify-between gap-2 rounded-[10px] border border-[#d7d4cb] bg-[#efece4]/40 px-2.5 py-2 text-left hover:border-[#4b63ff]"
                 >
-                  <span className="min-w-0 flex-1 truncate text-[10px]">{publicUrl}</span>
-                  <span className="shrink-0 font-mono text-[8px] uppercase">
+                  <span className="min-w-0 flex-1 truncate text-[11px] text-[#111111]">{publicUrl}</span>
+                  <span className="shrink-0 font-mono text-[9px] uppercase text-[#4b63ff]">
                     copy
                   </span>
                 </button>
@@ -324,21 +326,21 @@ export function ExportModal({
                   href={publicUrl}
                   target="_blank"
                   rel="noreferrer"
-                  className="inline-flex items-center gap-1 font-mono text-[9px] uppercase tracking-[0.08em] text-blue hover:underline"
+                  className="inline-flex items-center gap-1 font-mono text-[10px] uppercase tracking-[0.08em] text-[#4b63ff] hover:underline pt-1"
                 >
-                  Open public page <ExternalLink size={10} />
+                  Open public page <ExternalLink size={11} />
                 </a>
               </div>
             </div>
 
-            <div className="mt-4 rounded-xl border border-ink/15 bg-paper/70 p-3">
-              <p className="font-display text-sm font-bold">
+            <div className="mt-4 rounded-[17px] border border-[#d7d4cb] bg-[#efece4]/50 p-3.5">
+              <p className="font-display text-sm font-bold text-[#111111]">
                 {spec.name} ships with:
               </p>
-              <ul className="mt-1.5 grid gap-1 text-[11px] text-ink/60">
+              <ul className="mt-2 grid gap-1 text-[12px] text-[#2c2823]">
                 <li>· {build.layers.length} layered shapes, {build.bones.length} bones</li>
-                <li>· no external assets, no runtime API</li>
-                <li>· the same motion you just watched</li>
+                <li>· no external assets, zero runtime API dependencies</li>
+                <li>· the same deterministic motion you just watched</li>
               </ul>
             </div>
           </div>

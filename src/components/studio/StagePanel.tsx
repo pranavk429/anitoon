@@ -59,38 +59,38 @@ export function StagePanel({
       aria-label="Live mascot stage"
       className="flex min-w-0 flex-col gap-3"
     >
-      <div className="relative overflow-hidden rounded-2xl border-2 border-ink bg-white shadow-[6px_6px_0_#17151C]">
-        <div className="flex items-center justify-between gap-2 border-b-2 border-ink bg-paper px-3 py-2">
+      <div className="relative overflow-hidden rounded-[17px] border border-[#d7d4cb] bg-[#fefdf9] shadow-sm">
+        <div className="flex items-center justify-between gap-2 border-b border-[#d7d4cb] bg-[#efece4]/70 px-3.5 py-2.5">
           <div className="flex items-center gap-2">
-            <span className="flex h-2 w-2 rounded-full bg-coral blink-dot" />
-            <span className="mono-label !text-ink">Stage</span>
-            <span className="rounded-full border border-ink bg-white px-1.5 py-0.5 font-mono text-[8px] uppercase tracking-[0.1em]">
+            <span className="flex h-2 w-2 rounded-full bg-[#4b63ff] blink-dot" />
+            <span className="mono-label !text-[#111111]">Stage</span>
+            <span className="rounded-full border border-[#d7d4cb] bg-[#fefdf9] px-2 py-0.5 font-mono text-[9px] uppercase tracking-[0.08em] text-[#2c2823]">
               live · {def.name}
             </span>
           </div>
-          <div className="flex items-center gap-1.5 font-mono text-[9px] uppercase tracking-[0.1em] text-ink-soft">
+          <div className="flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-[0.08em] text-[#6f6759]">
             <span className="hidden sm:inline">{build.layers.length} layers</span>
             <span className="hidden sm:inline">·</span>
             <span>{formatBytes(lottieSize)}</span>
           </div>
         </div>
 
-        <div className="relative flex justify-center bg-paper-2/40 p-3 sm:p-5">
-          <div className="pointer-events-none absolute inset-0 halftone opacity-20" />
+        <div className="relative flex justify-center bg-[#efece4]/40 p-3 sm:p-5">
+          <div className="pointer-events-none absolute inset-0 grid-paper opacity-40" />
           <div
             className={clsx(
-              "relative w-full max-w-[520px] overflow-hidden rounded-xl border-2 border-ink",
-              bg === "paper" && "bg-white",
-              bg === "grid" && "bg-white",
-              bg === "halftone" && "bg-white",
+              "relative w-full max-w-[520px] overflow-hidden rounded-[13px] border border-[#d7d4cb]",
+              bg === "paper" && "bg-[#fefdf9]",
+              bg === "grid" && "bg-[#fefdf9]",
+              bg === "halftone" && "bg-[#fefdf9]",
               bg === "none" && "border-transparent bg-transparent",
             )}
           >
             {bg === "grid" && (
-              <div className="pointer-events-none absolute inset-0 grid-paper opacity-70" />
+              <div className="pointer-events-none absolute inset-0 grid-paper opacity-60" />
             )}
             {bg === "halftone" && (
-              <div className="pointer-events-none absolute inset-0 halftone" />
+              <div className="pointer-events-none absolute inset-0 halftone opacity-30" />
             )}
             <MascotStage
               spec={spec}
@@ -105,32 +105,32 @@ export function StagePanel({
               onTime={handleTime}
               className="relative z-10"
             />
-            <div className="pointer-events-none absolute left-2 top-2 z-20 flex items-center gap-1.5 rounded-full border border-ink/25 bg-white/85 px-2 py-1 font-mono text-[8px] uppercase tracking-[0.12em]">
+            <div className="pointer-events-none absolute left-2.5 top-2.5 z-20 flex items-center gap-1.5 rounded-full border border-[#d7d4cb] bg-[#fefdf9]/90 px-2 py-0.5 font-mono text-[9px] uppercase tracking-[0.08em] text-[#2c2823] shadow-sm">
               {spec.eyes} eyes
-              {showRig && <span className="text-coral">· rig</span>}
+              {showRig && <span className="text-[#ff5a45]">· rig</span>}
             </div>
             {compiling && (
-              <div className="absolute inset-0 z-30 flex flex-col items-center justify-center gap-3 bg-paper/85 backdrop-blur-[2px]">
-                <div className="flex h-12 w-12 items-center justify-center rounded-full border-2 border-ink bg-butter shadow-[3px_3px_0_#17151C]">
-                  <Sparkles size={20} className="animate-pulse" />
+              <div className="absolute inset-0 z-30 flex flex-col items-center justify-center gap-3 bg-[#efece4]/90 backdrop-blur-[2px]">
+                <div className="flex h-12 w-12 items-center justify-center rounded-full border border-[#d7d4cb] bg-[#ffc53d] shadow-sm">
+                  <Sparkles size={20} className="animate-pulse text-[#111111]" />
                 </div>
-                <p className="font-mono text-[10px] uppercase tracking-[0.14em]">
+                <p className="font-mono text-[11px] uppercase tracking-[0.1em] text-[#111111]">
                   {compileStatus || "Compiling"}
                 </p>
-                <div className="h-1.5 w-32 overflow-hidden rounded-full border border-ink bg-white">
-                  <div className="h-full w-1/2 animate-[marquee_1.2s_linear_infinite] bg-blue" />
+                <div className="h-1.5 w-32 overflow-hidden rounded-full border border-[#d7d4cb] bg-[#fefdf9]">
+                  <div className="h-full w-1/2 animate-[marquee_1.2s_linear_infinite] bg-[#4b63ff]" />
                 </div>
               </div>
             )}
           </div>
         </div>
 
-        <div className="border-t-2 border-ink px-3 py-2.5">
+        <div className="border-t border-[#d7d4cb] px-3.5 py-3 bg-[#fefdf9]">
           <div className="flex items-center gap-2">
             <button
               type="button"
               onClick={() => setPlaying((v) => !v)}
-              className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border-2 border-ink bg-blue text-white shadow-[2px_2px_0_#17151C] transition-transform hover:-translate-y-0.5"
+              className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-[#4b63ff] bg-[#4b63ff] text-white shadow-sm transition hover:bg-[#3850f3]"
               aria-label={playing ? "Pause" : "Play"}
             >
               {playing ? (
@@ -142,7 +142,7 @@ export function StagePanel({
             <button
               type="button"
               onClick={() => setResetKey((v) => v + 1)}
-              className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border-2 border-ink bg-white"
+              className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-[#d7d4cb] bg-[#fefdf9] text-[#111111] transition hover:bg-[#e2d8c6]"
               aria-label="Restart move"
             >
               <RotateCcw size={14} />
@@ -168,22 +168,22 @@ export function StagePanel({
                 }}
                 onKeyUp={() => setScrubbing(false)}
               />
-              <div className="mt-1 flex justify-between font-mono text-[8.5px] uppercase tracking-[0.1em] text-ink-soft">
+              <div className="mt-1 flex justify-between font-mono text-[9px] uppercase tracking-[0.08em] text-[#6f6759]">
                 <span>
                   {time.toFixed(1)}s / {def.duration.toFixed(1)}s
                 </span>
                 <span>{def.loop ? "loops" : "one-shot"}</span>
               </div>
             </div>
-            <div className="hidden items-center rounded-full border-2 border-ink bg-white p-0.5 sm:flex">
+            <div className="hidden items-center rounded-full border border-[#d7d4cb] bg-[#fefdf9] p-0.5 sm:flex">
               {[0.5, 1, 1.5].map((value) => (
                 <button
                   key={value}
                   type="button"
                   onClick={() => setSpeed(value)}
                   className={clsx(
-                    "rounded-full px-1.5 py-1 font-mono text-[8.5px] uppercase",
-                    speed === value ? "bg-ink text-white" : "text-ink",
+                    "rounded-full px-2 py-1 font-mono text-[9px] uppercase transition-colors",
+                    speed === value ? "bg-[#4b63ff] text-white" : "text-[#2c2823] hover:text-[#111111]",
                   )}
                   aria-pressed={speed === value}
                 >
@@ -194,7 +194,7 @@ export function StagePanel({
             <button
               type="button"
               onClick={() => setShowRig((v) => !v)}
-              className="chip !px-2 !py-1.5"
+              className="chip !px-2.5 !py-1 min-h-[32px]"
               aria-pressed={showRig}
               title="Toggle bone rig"
             >
@@ -214,7 +214,7 @@ export function StagePanel({
                         : "paper",
                 )
               }
-              className="chip !px-2 !py-1.5"
+              className="chip !px-2.5 !py-1 min-h-[32px]"
               title={`Background: ${bg}`}
             >
               <Grid3x3 size={12} />
@@ -224,7 +224,7 @@ export function StagePanel({
         </div>
       </div>
 
-      <div className="rounded-2xl border-2 border-ink bg-white p-2">
+      <div className="rounded-[17px] border border-[#d7d4cb] bg-[#fefdf9] p-2.5 shadow-sm">
         <div className="scrollbar-thin flex gap-1.5 overflow-x-auto px-0.5 py-0.5">
           {MOTIONS.map((m) => (
             <button
@@ -236,7 +236,7 @@ export function StagePanel({
                 setPlaying(true);
                 setResetKey((v) => v + 1);
               }}
-              className="chip shrink-0"
+              className="chip shrink-0 min-h-[32px]"
               aria-pressed={motion === m.id}
               data-active={motion === m.id}
               title={m.blurb}
@@ -249,14 +249,14 @@ export function StagePanel({
 
       <div className="flex flex-wrap items-center justify-between gap-2 px-1">
         <div className="flex items-center gap-2">
-          <span className="font-display text-lg font-extrabold leading-none">
+          <span className="font-display text-lg font-extrabold leading-none text-[#111111]">
             {spec.name}
           </span>
-          <span className="hidden font-mono text-[9px] uppercase tracking-[0.1em] text-ink-soft sm:inline">
+          <span className="hidden font-mono text-[10px] uppercase tracking-[0.08em] text-[#6f6759] sm:inline">
             {spec.species} · {spec.vibe} · {spec.tagline}
           </span>
         </div>
-        <span className="mono-label">
+        <span className="mono-label text-[10px]">
           {def.name} · {def.label}
         </span>
       </div>
