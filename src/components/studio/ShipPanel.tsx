@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import clsx from "clsx";
 import {
   ArrowUpRight,
@@ -261,6 +262,16 @@ export function ShipPanel({
             <Copy size={13} className="shrink-0 text-[#6f6759]" />
           </button>
         </div>
+
+        <Link
+          href="/studio?mode=3d&move=wave"
+          className="mt-2.5 flex min-h-[36px] items-center justify-between gap-2 rounded-[10px] border border-[#4b63ff]/30 bg-[#eef0ff] px-2.5 py-2 font-mono text-[10px] uppercase tracking-[0.06em] text-[#4b63ff] hover:border-[#4b63ff]"
+        >
+          <span className="flex items-center gap-1.5">
+            <Film size={12} /> 3D flagship · GLB stage
+          </span>
+          <ArrowUpRight size={12} />
+        </Link>
 
         <details className="group mt-2.5">
           <summary className="flex cursor-pointer list-none items-center justify-between rounded-[10px] border border-dashed border-[#d7d4cb] px-2.5 py-2 font-mono text-[10px] uppercase tracking-[0.08em] text-[#2c2823] [&::-webkit-details-marker]:hidden">

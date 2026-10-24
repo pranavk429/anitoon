@@ -4,6 +4,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import clsx from "clsx";
 import {
+  Box,
   Check,
   Download,
   ExternalLink,
@@ -297,6 +298,37 @@ export function ExportModal({
                   </span>
                 </button>
               ))}
+            </div>
+
+            <div className="mt-4 rounded-[17px] border border-[#4b63ff]/25 bg-[#eef0ff] p-3.5">
+              <div className="flex items-start gap-2.5">
+                <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-[9px] border border-[#4b63ff]/30 bg-[#fefdf9] text-[#4b63ff]">
+                  <Box size={15} strokeWidth={2.2} />
+                </span>
+                <div className="min-w-0">
+                  <p className="mono-label !text-[#4b63ff]">3D flagship · separate asset</p>
+                  <p className="mt-1 text-[11px] leading-relaxed text-[#2c2823]">
+                    Mochi is a hand-built GLB with a 27-joint skeleton, six
+                    clips, and seven expression blendshapes. Your 2D spec and
+                    exports stay exactly as they are.
+                  </p>
+                </div>
+              </div>
+              <div className="mt-2.5 flex flex-wrap gap-2">
+                <a
+                  href="/three/mochi.glb"
+                  download="mochi-anitoon.glb"
+                  className="inline-flex min-h-[32px] items-center gap-1.5 rounded-full border border-[#4b63ff] bg-[#4b63ff] px-3 font-mono text-[9px] uppercase tracking-[0.06em] text-white hover:bg-[#3850f3]"
+                >
+                  <Download size={11} /> Download GLB
+                </a>
+                <a
+                  href="/studio?mode=3d&move=wave"
+                  className="inline-flex min-h-[32px] items-center gap-1.5 rounded-full border border-[#d7d4cb] bg-[#fefdf9] px-3 font-mono text-[9px] uppercase tracking-[0.06em] text-[#111111] hover:border-[#4b63ff]"
+                >
+                  Open 3D stage <ExternalLink size={10} />
+                </a>
+              </div>
             </div>
 
             <div className="mt-4 rounded-[17px] border border-dashed border-[#d7d4cb] bg-[#fefdf9] p-3.5">

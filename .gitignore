@@ -54,3 +54,11 @@ next-env.d.ts
 /MASCOT_REDESIGN_BRIEF.md
 /MASCOT_REPORT.md
 /NEXT_CHAT_3D_PROMPT.md
+
+# 3D build + verification artifacts
+/.shots3d/
+/tools/.cache/
+
+# python build caches
+__pycache__/
+*.pyc

@@ -3,6 +3,7 @@ import Image from "next/image";
 import {
   ArrowRight,
   ArrowUpRight,
+  Box,
   FileArchive,
   FileCode2,
   FileImage,
@@ -13,6 +14,7 @@ import {
 import { SiteNav } from "@/components/site/SiteNav";
 import { HeroStage } from "@/components/site/HeroStage";
 import { InteractiveEyeProp } from "@/components/site/InteractiveEyeProp";
+import { ThreeShowcase } from "@/components/site/ThreeShowcase";
 import { Logo } from "@/components/site/Logo";
 import { MascotStill } from "@/components/mascot/MascotStill";
 import { DEMO_SPEC, GALLERY, SAMPLE_PROMPTS } from "@/lib/mascot/presets";
@@ -31,7 +33,10 @@ const MARQUEE_ITEMS_1 = [
   "100% vector",
   "Drop-in React SDK",
   "Deterministic rig",
-  "30fps motion",
+  "30fps vector motion",
+  "27-joint 3D rig",
+  "Six 3D clips",
+  "GLB export",
 ];
 
 const MARQUEE_ITEMS_2 = [
@@ -122,6 +127,10 @@ const FAQ = [
   {
     q: "What formats can I export?",
     a: "Layered SVG, Lottie JSON with motion baked in, 1024×1024 transparent PNG, and a full SDK zip with Mascot.tsx, README, and an offline preview page.",
+  },
+  {
+    q: "What is the 3D flagship?",
+    a: "Mochi is a hand-built Blender character with a 27-joint rig, six authored 60fps clips, and seven expression blendshapes. It runs live in the browser from a local GLB with soft shadows and camera orbit. It is not AI-generated and it does not replace the 2D vector compiler.",
   },
   {
     q: "Can I use the mascots commercially?",
@@ -237,9 +246,18 @@ export default function Home() {
               {/* Subhead */}
               <p className="type-body-lg text-[#2c2823] max-w-[680px] text-center mb-8">
                 Describe or voice a character. Anitoon compiles a real layered vector
-                mascot with 18 bones, 11 authored moves, and instant Lottie, SVG, PNG,
-                and React SDK exports. No image credits, no runtime lock-in.
+                mascot with 18 bones and 11 authored moves, then exports Lottie, SVG,
+                PNG, or a React SDK. No image credits, no runtime lock-in.
               </p>
+
+              <div className="mb-5 flex flex-wrap items-center justify-center gap-x-3 gap-y-1">
+                <p className="type-body-xl text-[#2f45c8]">
+                  Now with a 3D flagship.
+                </p>
+                <p className="type-body-lg-17 text-[#6f6759]">
+                  27 joints · six authored clips · a real GLB.
+                </p>
+              </div>
 
               {/* Interactive prompt form */}
               <div className="mb-4 w-full flex justify-center">
@@ -247,7 +265,7 @@ export default function Home() {
               </div>
 
               {/* Sample prompt chips */}
-              <div className="flex flex-wrap items-center justify-center gap-2 mb-10">
+              <div className="mb-8 flex flex-wrap items-center justify-center gap-2">
                 <span className="type-body-xs text-[#6f6759]">Try:</span>
                 {SAMPLE_PROMPTS.slice(0, 3).map((s) => (
                   <Link
@@ -258,6 +276,12 @@ export default function Home() {
                     {s}
                   </Link>
                 ))}
+                <Link
+                  href="#three"
+                  className="inline-flex min-h-[30px] items-center gap-1.5 rounded-full border border-[#3247d4]/45 bg-[#eef0ff] px-3 font-mono text-[10px] uppercase tracking-[0.06em] text-[#2f45c8] transition hover:border-[#3247d4] hover:bg-[#e4e8ff]"
+                >
+                  <Box size={12} strokeWidth={2.3} /> New · meet Mochi in 3D
+                </Link>
               </div>
 
               {/* Live interactive mascot stage */}
@@ -275,6 +299,8 @@ export default function Home() {
             <span className="type-heading-300 text-[#111111]">ANITOON</span>
           </div>
         </section>
+
+        <ThreeShowcase />
 
         {/* =========================================================================
             SECTION 2: SELECTED WORK (Role: hero, Target Height: ~1566px, 2 Cols)
@@ -711,6 +737,12 @@ export default function Home() {
                     Work
                   </Link>
                   <Link
+                    href="/#three"
+                    className="type-link text-[#2c2823] hover:text-[#4b63ff] min-h-[44px] min-w-[44px] px-3 py-2.5 inline-flex items-center"
+                  >
+                    3D flagship
+                  </Link>
+                  <Link
                     href="/studio"
                     className="type-link text-[#2c2823] hover:text-[#4b63ff] min-h-[44px] min-w-[44px] px-3 py-2.5 inline-flex items-center"
                   >
@@ -750,7 +782,7 @@ export default function Home() {
                   © 2026 Anitoon. No fake logos, no fake customers.
                 </span>
                 <span className="type-body-xs-12 text-[#6f6759]">
-                  18 bones · 11 moves · Lottie · SVG · PNG · React TSX
+                  18 bones · 11 moves · 3D GLB · Lottie · SVG · PNG · React TSX
                 </span>
               </div>
             </footer>

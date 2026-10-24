@@ -27,6 +27,7 @@ import {
   MOTION_BY_ID,
   type MotionId,
 } from "@/lib/mascot/animate";
+import { mapMotionTo3D } from "@/lib/three/mascot3d";
 import { DEMO_SPEC } from "@/lib/mascot/presets";
 import {
   createSpec,
@@ -52,6 +53,7 @@ import { compileLottie, formatBytes, lottieBytes } from "@/lib/mascot/lottie";
 import { BriefPanel } from "./BriefPanel";
 import { CharacterPanel } from "./CharacterPanel";
 import { StagePanel } from "./StagePanel";
+import { Stage3DPanel } from "./Stage3DPanel";
 import { ShipPanel, type ExportFormat } from "./ShipPanel";
 import { ExportModal } from "./ExportModal";
 import { RecentsDrawer } from "./RecentsDrawer";
@@ -79,6 +81,7 @@ function readSpec(raw: string | null): MascotSpec | null {
 }
 
 type Tab = "brief" | "stage" | "ship";
+type StageMode = "2d" | "3d";
 
 export function StudioClient() {
   const searchParams = useSearchParams();
@@ -97,6 +100,7 @@ export function StudioClient() {
   const [exporting, setExporting] = useState<ExportFormat | null>(null);
   const [toast, setToast] = useState<{ id: number; text: string } | null>(null);
   const [tab, setTab] = useState<Tab>("stage");
+  const [stageMode, setStageMode] = useState<StageMode>("2d");
   const [origin, setOrigin] = useState("");
   const booted = useRef(false);
   const genId = useRef(0);
@@ -124,6 +128,7 @@ export function StudioClient() {
     const qCode = searchParams.get("m");
     const qPrompt = searchParams.get("prompt");
     const qMove = searchParams.get("move") as MotionId | null;
+    const qMode = searchParams.get("mode");
 
     if (qCode) {
       const decoded = decodeSpec(qCode);
@@ -154,6 +159,8 @@ export function StudioClient() {
     }
 
     if (qMove && qMove in MOTION_BY_ID) nextMotion = qMove;
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    if (qMode === "3d") setStageMode("3d");
 
     const recentCodes = window.localStorage.getItem(RECENTS_KEY);
     if (recentCodes) {
@@ -219,8 +226,14 @@ export function StudioClient() {
     [build, motion],
   );
   const code = useMemo(() => encodeSpec(spec), [spec]);
-  const studioUrl = origin ? `${origin}/studio?m=${code}` : `/studio?m=${code}`;
+  const studioParams = useMemo(() => {
+    const params = new URLSearchParams({ m: code, move: motion });
+    if (stageMode === "3d") params.set("mode", "3d");
+    return params.toString();
+  }, [code, motion, stageMode]);
+  const studioUrl = origin ? `${origin}/studio?${studioParams}` : `/studio?${studioParams}`;
   const publicUrl = origin ? `${origin}/m/${code}` : `/m/${code}`;
+  const motion3d = useMemo(() => mapMotionTo3D(motion), [motion]);
   const embed = useMemo(
     () => embedSnippet(spec, origin || "https://your-site.com", code),
     [spec, origin, code],
@@ -553,15 +566,73 @@ export function StudioClient() {
               tab !== "stage" && "hidden",
             )}
           >
-            <StagePanel
-              spec={spec}
-              build={build}
-              motion={motion}
-              onMotion={setMotion}
-              compiling={compiling}
-              compileStatus={compileStatus}
-              lottieSize={lottieSize}
-            />
+            <div className="mb-2.5 flex flex-wrap items-center justify-between gap-2 rounded-full border border-[#d7d4cb] bg-[#fefdf9] p-1 pl-2.5 shadow-sm">
+              <div
+                role="group"
+                aria-label="Stage renderer"
+                className="flex items-center gap-1"
+              >
+                {(
+                  [
+                    ["2d", "2D vector", "Lottie · SVG"],
+                    ["3d", "3D flagship", "GLB · live lights"],
+                  ] as Array<[StageMode, string, string]>
+                ).map(([value, label, hint]) => (
+                  <button
+                    key={value}
+                    type="button"
+                    onClick={() => setStageMode(value)}
+                    aria-pressed={stageMode === value}
+                    className={clsx(
+                      "flex min-h-[32px] items-center gap-1.5 rounded-full px-2.5 py-1.5 font-mono text-[10px] uppercase tracking-[0.06em] transition-colors",
+                      stageMode === value
+                        ? "bg-[#4b63ff] text-white"
+                        : "text-[#2c2823] hover:bg-[#efece4]",
+                    )}
+                    title={hint}
+                  >
+                    {label}
+                    {value === "3d" && (
+                      <span
+                        className={clsx(
+                          "rounded-full px-1.5 py-0.5 text-[8px] font-semibold",
+                          stageMode === "3d"
+                            ? "bg-white/20 text-white"
+                            : "bg-[#ffc53d] text-[#111111]",
+                        )}
+                      >
+                        new
+                      </span>
+                    )}
+                  </button>
+                ))}
+              </div>
+              <span className="hidden pr-2 font-mono text-[9px] uppercase tracking-[0.08em] text-[#6f6759] sm:inline">
+                {stageMode === "3d"
+                  ? "27 joints · 6 clips · morph targets"
+                  : "18 bones · 11 moves · vector out"}
+              </span>
+            </div>
+
+            {stageMode === "2d" ? (
+              <StagePanel
+                spec={spec}
+                build={build}
+                motion={motion}
+                onMotion={setMotion}
+                compiling={compiling}
+                compileStatus={compileStatus}
+                lottieSize={lottieSize}
+              />
+            ) : (
+              <Stage3DPanel
+                spec={spec}
+                expression={spec.expression}
+                onExpression={(expression) => update({ expression })}
+                move={motion3d}
+                onMove={(next) => setMotion(next)}
+              />
+            )}
           </div>
 
           <aside
