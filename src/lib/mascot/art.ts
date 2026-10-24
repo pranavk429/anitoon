@@ -16,7 +16,13 @@ import {
   type Path,
   type Vec,
 } from "./geometry";
-import { derivePalette, type MascotSpec, type Palette, type SpeciesId } from "./spec";
+import {
+  derivePalette,
+  type MascotSpec,
+  type Palette,
+  type SpeciesId,
+  type ExpressionId,
+} from "./spec";
 
 export type ShapeStyle = {
   fill?: string;
@@ -70,22 +76,22 @@ const FIT_BOX = { w: 386, h: 312, bottom: 372, cx: 210 };
 /* ------------------------------------------------------------------ */
 
 const EYE_POS: Record<SpeciesId, Vec> = {
-  cat: [31, -78],
-  dog: [30, -74],
-  fox: [30, -78],
-  bear: [29, -76],
-  bunny: [31, -76],
-  frog: [35, -80],
-  robot: [34, -93],
-  blob: [29, -74],
+  cat: [31, -62],
+  dog: [30, -60],
+  fox: [31, -62],
+  bear: [29, -58],
+  bunny: [30, -62],
+  frog: [34, -66],
+  robot: [33, -74],
+  blob: [29, -60],
 };
 
 const EAR_POS: Record<SpeciesId, Vec> = {
-  cat: [44, -106],
-  dog: [57, -92],
-  fox: [46, -110],
+  cat: [46, -108],
+  dog: [58, -92],
+  fox: [48, -112],
   bear: [48, -108],
-  bunny: [30, -112],
+  bunny: [28, -114],
   frog: [0, 0],
   robot: [0, 0],
   blob: [0, 0],
@@ -109,74 +115,407 @@ const LIMB: Record<
     footRy: number;
   }
 > = {
-  cat: { upperArm: 23, foreArm: 21, armLen: 44, foreLen: 38, hand: 12, thigh: 27, shin: 22, legLen: 34, shinLen: 31, footX: 7, footY: 32, footRx: 18, footRy: 10 },
-  dog: { upperArm: 25, foreArm: 23, armLen: 46, foreLen: 39, hand: 13, thigh: 29, shin: 24, legLen: 34, shinLen: 31, footX: 8, footY: 32, footRx: 20, footRy: 11 },
-  fox: { upperArm: 21, foreArm: 19, armLen: 45, foreLen: 39, hand: 11, thigh: 24, shin: 20, legLen: 35, shinLen: 32, footX: 8, footY: 33, footRx: 18, footRy: 9 },
-  bear: { upperArm: 27, foreArm: 25, armLen: 45, foreLen: 38, hand: 14, thigh: 30, shin: 25, legLen: 33, shinLen: 30, footX: 8, footY: 31, footRx: 21, footRy: 11 },
-  bunny: { upperArm: 20, foreArm: 18, armLen: 44, foreLen: 39, hand: 11, thigh: 24, shin: 20, legLen: 35, shinLen: 32, footX: 9, footY: 33, footRx: 21, footRy: 9 },
-  frog: { upperArm: 19, foreArm: 17, armLen: 42, foreLen: 38, hand: 10, thigh: 23, shin: 19, legLen: 36, shinLen: 33, footX: 10, footY: 34, footRx: 20, footRy: 9 },
-  robot: { upperArm: 24, foreArm: 22, armLen: 44, foreLen: 37, hand: 12, thigh: 26, shin: 22, legLen: 34, shinLen: 31, footX: 5, footY: 32, footRx: 19, footRy: 10 },
-  blob: { upperArm: 26, foreArm: 24, armLen: 40, foreLen: 34, hand: 12, thigh: 34, shin: 30, legLen: 30, shinLen: 27, footX: 6, footY: 28, footRx: 19, footRy: 10 },
+  cat: { upperArm: 22, foreArm: 20, armLen: 36, foreLen: 32, hand: 13, thigh: 25, shin: 20, legLen: 28, shinLen: 25, footX: 5, footY: 25, footRx: 17, footRy: 10 },
+  dog: { upperArm: 24, foreArm: 22, armLen: 37, foreLen: 33, hand: 14, thigh: 27, shin: 22, legLen: 28, shinLen: 25, footX: 6, footY: 25, footRx: 18, footRy: 11 },
+  fox: { upperArm: 21, foreArm: 19, armLen: 36, foreLen: 33, hand: 13, thigh: 24, shin: 19, legLen: 29, shinLen: 26, footX: 6, footY: 26, footRx: 17, footRy: 10 },
+  bear: { upperArm: 26, foreArm: 24, armLen: 36, foreLen: 32, hand: 15, thigh: 28, shin: 23, legLen: 27, shinLen: 24, footX: 6, footY: 24, footRx: 19, footRy: 11 },
+  bunny: { upperArm: 20, foreArm: 18, armLen: 35, foreLen: 33, hand: 13, thigh: 23, shin: 19, legLen: 29, shinLen: 26, footX: 7, footY: 26, footRx: 18, footRy: 10 },
+  frog: { upperArm: 19, foreArm: 17, armLen: 34, foreLen: 32, hand: 12, thigh: 23, shin: 19, legLen: 30, shinLen: 26, footX: 7, footY: 26, footRx: 18, footRy: 10 },
+  robot: { upperArm: 22, foreArm: 20, armLen: 35, foreLen: 31, hand: 13, thigh: 25, shin: 21, legLen: 28, shinLen: 25, footX: 4, footY: 25, footRx: 18, footRy: 10 },
+  blob: { upperArm: 24, foreArm: 22, armLen: 32, foreLen: 28, hand: 13, thigh: 28, shin: 24, legLen: 24, shinLen: 22, footX: 5, footY: 22, footRx: 17, footRy: 10 },
 };
 
 /* ------------------------------------------------------------------ */
-/* Silhouettes                                                         */
+/* Silhouettes & plush anime curves                                    */
 /* ------------------------------------------------------------------ */
+
+// Enhanced anime-cute head points with plush flared cheek fluff
+const HEAD_POINTS: Record<SpeciesId, Vec[]> = {
+  cat: [
+    [0, -135],
+    [28, -133],
+    [54, -121],
+    [72, -99],
+    [82, -73],
+    [86, -49],
+    [95, -41], // upper cheek fluff spike
+    [85, -34],
+    [93, -24], // lower cheek fluff spike
+    [76, -12],
+    [52, 0],
+    [24, 7],
+    [0, 8],    // chin
+    [-24, 7],
+    [-52, 0],
+    [-76, -12],
+    [-93, -24],
+    [-85, -34],
+    [-95, -41],
+    [-86, -49],
+    [-82, -73],
+    [-72, -99],
+    [-54, -121],
+    [-28, -133],
+  ],
+  fox: [
+    [0, -137],
+    [26, -134],
+    [52, -122],
+    [70, -100],
+    [82, -74],
+    [88, -48],
+    [98, -40], // sharp stylish cheek tuft
+    [86, -32],
+    [96, -20],
+    [72, -6],
+    [44, 4],
+    [18, 10],
+    [0, 11],
+    [-18, 10],
+    [-44, 4],
+    [-72, -6],
+    [-96, -20],
+    [-86, -32],
+    [-98, -40],
+    [-88, -48],
+    [-82, -74],
+    [-70, -100],
+    [-52, -122],
+    [-26, -134],
+  ],
+  dog: [
+    [0, -132],
+    [32, -130],
+    [60, -118],
+    [78, -96],
+    [88, -66],
+    [90, -36], // chubby jowls
+    [84, -10],
+    [68, 6],
+    [40, 14],
+    [0, 16],
+    [-40, 14],
+    [-68, 6],
+    [-84, -10],
+    [-90, -36],
+    [-88, -66],
+    [-78, -96],
+    [-60, -118],
+    [-32, -130],
+  ],
+  bear: [
+    [0, -130],
+    [34, -128],
+    [64, -116],
+    [84, -92],
+    [92, -62], // ultra chubby cheeks
+    [92, -32],
+    [84, -6],
+    [66, 11],
+    [36, 18],
+    [0, 19],
+    [-36, 18],
+    [-66, 11],
+    [-84, -6],
+    [-92, -32],
+    [-92, -62],
+    [-84, -92],
+    [-64, -116],
+    [-34, -128],
+  ],
+  bunny: [
+    [0, -136],
+    [26, -133],
+    [52, -120],
+    [70, -96],
+    [80, -68],
+    [85, -40],
+    [90, -22], // sweet round cheek bulge
+    [78, -2],
+    [50, 10],
+    [24, 16],
+    [0, 17],
+    [-24, 16],
+    [-50, 10],
+    [-78, -2],
+    [-90, -22],
+    [-85, -40],
+    [-80, -68],
+    [-70, -96],
+    [-52, -120],
+    [-26, -133],
+  ],
+  frog: [
+    [0, -132],
+    [36, -130],
+    [68, -116],
+    [88, -90],
+    [92, -56],
+    [88, -24],
+    [74, 2],
+    [48, 15],
+    [22, 21],
+    [0, 22],
+    [-22, 21],
+    [-48, 15],
+    [-74, 2],
+    [-88, -24],
+    [-92, -56],
+    [-88, -90],
+    [-68, -116],
+    [-36, -130],
+  ],
+  robot: [],
+  blob: [
+    [0, -140],
+    [22, -136],
+    [48, -122],
+    [68, -96],
+    [78, -66],
+    [82, -34],
+    [86, -8], // mochi squish
+    [68, 13],
+    [36, 21],
+    [0, 22],
+    [-36, 21],
+    [-68, 13],
+    [-86, -8],
+    [-82, -34],
+    [-78, -66],
+    [-68, -96],
+    [-48, -122],
+    [-22, -136],
+  ],
+};
 
 const BODY_POINTS: Record<SpeciesId, Vec[]> = {
-  cat: [[0, -150], [30, -148], [55, -136], [71, -115], [79, -87], [82, -55], [78, -26], [67, -5], [47, 9], [22, 15], [0, 16], [-24, 15], [-49, 9], [-69, -5], [-79, -26], [-82, -55], [-79, -87], [-71, -115], [-55, -136], [-30, -148]],
-  dog: [[0, -146], [34, -146], [62, -132], [78, -108], [86, -76], [88, -42], [82, -12], [64, 6], [36, 15], [0, 18], [-38, 15], [-66, 6], [-83, -12], [-88, -42], [-86, -76], [-78, -108], [-62, -132], [-34, -146]],
-  fox: [[0, -154], [28, -151], [52, -138], [68, -114], [76, -84], [78, -52], [74, -24], [62, -6], [42, 8], [18, 14], [0, 15], [-20, 14], [-44, 8], [-64, -6], [-74, -24], [-78, -52], [-76, -84], [-68, -114], [-52, -138], [-28, -151]],
-  bear: [[0, -144], [34, -144], [64, -132], [80, -108], [88, -76], [90, -40], [84, -10], [66, 8], [38, 17], [0, 20], [-40, 17], [-68, 8], [-85, -10], [-90, -40], [-88, -76], [-80, -108], [-64, -132], [-36, -144]],
-  bunny: [[0, -156], [26, -153], [48, -141], [63, -118], [70, -90], [72, -58], [68, -28], [58, -7], [40, 10], [20, 17], [0, 18], [-22, 17], [-42, 10], [-60, -7], [-69, -28], [-72, -58], [-70, -90], [-62, -118], [-47, -141], [-25, -153]],
-  frog: [[0, -136], [34, -135], [60, -124], [78, -102], [86, -72], [87, -38], [78, -10], [56, 8], [28, 17], [0, 19], [-30, 17], [-58, 8], [-79, -10], [-87, -38], [-86, -72], [-78, -102], [-59, -124], [-33, -135]],
+  cat: [
+    [0, -142],
+    [28, -140],
+    [52, -128],
+    [68, -106],
+    [75, -78],
+    [77, -48],
+    [71, -18],
+    [55, 4],
+    [28, 14],
+    [0, 16],
+    [-28, 14],
+    [-55, 4],
+    [-71, -18],
+    [-77, -48],
+    [-75, -78],
+    [-68, -106],
+    [-52, -128],
+    [-28, -140],
+  ],
+  dog: [
+    [0, -140],
+    [32, -138],
+    [58, -124],
+    [74, -100],
+    [82, -70],
+    [84, -38],
+    [78, -8],
+    [60, 8],
+    [32, 16],
+    [0, 18],
+    [-32, 16],
+    [-60, 8],
+    [-78, -8],
+    [-84, -38],
+    [-82, -70],
+    [-74, -100],
+    [-58, -124],
+    [-32, -138],
+  ],
+  fox: [
+    [0, -144],
+    [26, -142],
+    [48, -128],
+    [64, -104],
+    [72, -76],
+    [74, -46],
+    [68, -18],
+    [52, 4],
+    [26, 13],
+    [0, 15],
+    [-26, 13],
+    [-52, 4],
+    [-68, -18],
+    [-74, -46],
+    [-72, -76],
+    [-64, -104],
+    [-48, -128],
+    [-26, -142],
+  ],
+  bear: [
+    [0, -138],
+    [32, -136],
+    [60, -124],
+    [76, -100],
+    [84, -70],
+    [86, -36],
+    [80, -6],
+    [62, 10],
+    [34, 18],
+    [0, 20],
+    [-34, 18],
+    [-62, 10],
+    [-80, -6],
+    [-86, -36],
+    [-84, -70],
+    [-76, -100],
+    [-60, -124],
+    [-32, -136],
+  ],
+  bunny: [
+    [0, -144],
+    [26, -142],
+    [48, -128],
+    [63, -104],
+    [70, -76],
+    [72, -46],
+    [67, -18],
+    [53, 5],
+    [26, 14],
+    [0, 16],
+    [-26, 14],
+    [-53, 5],
+    [-67, -18],
+    [-72, -46],
+    [-70, -76],
+    [-63, -104],
+    [-48, -128],
+    [-26, -142],
+  ],
+  frog: [
+    [0, -134],
+    [32, -132],
+    [58, -120],
+    [74, -96],
+    [82, -66],
+    [83, -34],
+    [74, -6],
+    [54, 10],
+    [26, 18],
+    [0, 20],
+    [-26, 18],
+    [-54, 10],
+    [-74, -6],
+    [-83, -34],
+    [-82, -66],
+    [-74, -96],
+    [-58, -120],
+    [-32, -132],
+  ],
   robot: [],
-  blob: [[0, -146], [28, -144], [51, -131], [66, -109], [72, -85], [70, -61], [77, -37], [74, -14], [55, 4], [27, 13], [0, 15], [-29, 13], [-54, 4], [-72, -14], [-76, -37], [-70, -61], [-73, -85], [-66, -109], [-52, -131], [-29, -144]],
-};
-
-const HEAD_POINTS: Record<SpeciesId, Vec[]> = {
-  cat: [[0, -127], [32, -124], [56, -112], [70, -91], [76, -65], [74, -39], [64, -18], [46, -4], [22, 3], [0, 4], [-24, 3], [-50, -4], [-67, -18], [-75, -39], [-76, -65], [-70, -91], [-56, -112], [-32, -124]],
-  dog: [[0, -124], [34, -124], [59, -113], [74, -93], [80, -66], [79, -38], [72, -14], [54, 2], [28, 9], [0, 10], [-30, 9], [-56, 2], [-73, -14], [-80, -38], [-80, -66], [-74, -93], [-59, -113], [-34, -124]],
-  fox: [[0, -128], [31, -125], [54, -113], [68, -92], [73, -66], [71, -40], [61, -19], [43, -5], [20, 2], [0, 3], [-22, 2], [-45, -5], [-62, -19], [-72, -40], [-73, -66], [-68, -92], [-54, -113], [-31, -125]],
-  bear: [[0, -124], [35, -124], [62, -113], [77, -92], [82, -65], [81, -38], [74, -16], [57, 0], [30, 7], [0, 8], [-32, 7], [-58, 0], [-75, -16], [-82, -38], [-82, -65], [-77, -92], [-62, -113], [-35, -124]],
-  bunny: [[0, -128], [30, -126], [54, -114], [68, -93], [73, -67], [71, -41], [61, -19], [43, -5], [20, 2], [0, 3], [-22, 2], [-45, -5], [-62, -19], [-72, -41], [-73, -67], [-68, -93], [-54, -114], [-30, -126]],
-  frog: [[0, -126], [37, -125], [63, -112], [80, -88], [85, -58], [83, -28], [72, -4], [51, 10], [25, 16], [0, 17], [-27, 16], [-53, 10], [-73, -4], [-84, -28], [-85, -58], [-80, -88], [-63, -112], [-37, -125]],
-  robot: [],
-  blob: [[0, -125], [31, -123], [56, -111], [71, -89], [76, -64], [72, -42], [78, -20], [70, 0], [50, 10], [25, 14], [0, 14], [-27, 14], [-52, 10], [-71, 0], [-78, -20], [-72, -42], [-76, -64], [-71, -89], [-56, -111], [-31, -123]],
+  blob: [
+    [0, -142],
+    [26, -140],
+    [48, -126],
+    [64, -102],
+    [70, -78],
+    [68, -52],
+    [74, -28],
+    [70, -4],
+    [52, 8],
+    [26, 15],
+    [0, 17],
+    [-26, 15],
+    [-52, 8],
+    [-70, -4],
+    [-74, -28],
+    [-68, -52],
+    [-70, -78],
+    [-64, -102],
+    [-48, -126],
+    [-26, -140],
+  ],
 };
 
 function bodySilhouette(species: SpeciesId): Path {
-  if (species === "robot") return roundRect(-66, -148, 132, 162, 42);
-  return smooth(BODY_POINTS[species], true, 0.95);
+  if (species === "robot") return roundRect(-64, -144, 128, 158, 38);
+  return smooth(BODY_POINTS[species], true, 0.92);
 }
 
 function headSilhouette(species: SpeciesId): Path {
-  if (species === "robot") return roundRect(-70, -132, 140, 142, 42);
-  return smooth(HEAD_POINTS[species], true, 0.95);
+  if (species === "robot") return roundRect(-70, -136, 140, 142, 38);
+  return smooth(HEAD_POINTS[species], true, 0.88);
+}
+
+// 100% seamless limb generator: strokes outer contours but never the connecting joint seam!
+function makeSeamlessUpperLimb(length: number, rootW: number, tipW: number, start = 0) {
+  const hr = rootW / 2;
+  const ht = tipW / 2;
+  const fillPoints: Vec[] = [
+    [-hr * 0.9, start],
+    [0, start - 2],
+    [hr * 0.9, start],
+    [hr, start + length * 0.3],
+    [ht * 1.05, start + length * 0.7],
+    [ht, start + length],
+    [-ht, start + length],
+    [-ht * 1.05, start + length * 0.7],
+    [-hr, start + length * 0.3],
+  ];
+  const fill = smooth(fillPoints, true, 0.6);
+
+  // Stroke only the outer edges and shoulder - NEVER cross the elbow joint!
+  const strokePoints: Vec[] = [
+    [-ht, start + length],
+    [-ht * 1.05, start + length * 0.7],
+    [-hr, start + length * 0.3],
+    [-hr * 0.9, start],
+    [0, start - 2],
+    [hr * 0.9, start],
+    [hr, start + length * 0.3],
+    [ht * 1.05, start + length * 0.7],
+    [ht, start + length],
+  ];
+  const outline = smooth(strokePoints, false, 0.6);
+  return { fill, outline };
+}
+
+function makeSeamlessLowerLimb(length: number, rootW: number, tipW: number, start = 0) {
+  const hr = rootW / 2;
+  const ht = tipW / 2;
+  const fillPoints: Vec[] = [
+    [-hr, start],
+    [hr, start],
+    [hr * 0.95, start + length * 0.3],
+    [ht * 1.05, start + length * 0.7],
+    [ht, start + length],
+    [0, start + length + 2],
+    [-ht, start + length],
+    [-ht * 1.05, start + length * 0.7],
+    [-hr * 0.95, start + length * 0.3],
+  ];
+  const fill = smooth(fillPoints, true, 0.6);
+
+  // Stroke only the sides and wrist/ankle - NEVER cross the top joint!
+  const strokePoints: Vec[] = [
+    [-hr, start],
+    [-hr * 0.95, start + length * 0.3],
+    [-ht * 1.05, start + length * 0.7],
+    [-ht, start + length],
+    [0, start + length + 2],
+    [ht, start + length],
+    [ht * 1.05, start + length * 0.7],
+    [hr * 0.95, start + length * 0.3],
+    [hr, start],
+  ];
+  const outline = smooth(strokePoints, false, 0.6);
+  return { fill, outline };
 }
 
 function limbPath(length: number, width: number, start = 0): Path {
-  const hw = width / 2;
-  return smooth(
-    [
-      [-hw * 0.92, start],
-      [hw * 0.92, start],
-      [hw, start + length * 0.34],
-      [hw * 0.9, length * 0.86],
-      [hw * 0.62, length],
-      [0, length + 2],
-      [-hw * 0.62, length],
-      [-hw * 0.9, length * 0.86],
-      [-hw, start + length * 0.34],
-    ],
-    true,
-    0.55,
-  );
+  return makeSeamlessUpperLimb(length, width, width * 0.72, start).fill;
 }
 
 function star(cx: number, cy: number, r: number, points = 4): Path {
   const verts: Vec[] = [];
-  const inner = r * 0.32;
+  const inner = r * 0.28;
   for (let i = 0; i < points * 2; i++) {
     const angle = (Math.PI / points) * i - Math.PI / 2;
     const rad = i % 2 === 0 ? r : inner;
@@ -191,32 +530,34 @@ function star(cx: number, cy: number, r: number, points = 4): Path {
 
 export function buildMascot(spec: MascotSpec): Build {
   const p = derivePalette(spec.primary, spec.accent, spec.ink);
-  const species = spec.species;
+  const species = spec.species && spec.species in LIMB ? spec.species : "cat";
+  const expression: ExpressionId = spec.expression ?? "happy";
   const limbs = LIMB[species];
   const side = spec.seed % 2 === 0 ? 1 : -1;
   const isRobot = species === "robot";
   const isBlob = species === "blob";
   const isFrog = species === "frog";
 
+  // Branded, charming asymmetric anime default stance (no stiff T-pose!)
   const bones: Bone[] = [
     { id: "root", parent: null, x: 210, y: STAGE.ground },
-    { id: "body", parent: "root", x: 0, y: -92, counterParentScale: false },
-    { id: "head", parent: "body", x: 0, y: -142, counterParentScale: true },
+    { id: "body", parent: "root", x: 0, y: -94, rot: 1.5, counterParentScale: false },
+    { id: "head", parent: "body", x: 0, y: -142, rot: -2.8, counterParentScale: true },
     { id: "headTop", parent: "head", x: 0, y: 0 },
-    { id: "earL", parent: "head", x: -EAR_POS[species][0], y: EAR_POS[species][1] },
-    { id: "earR", parent: "head", x: EAR_POS[species][0], y: EAR_POS[species][1] },
+    { id: "earL", parent: "head", x: -EAR_POS[species][0], y: EAR_POS[species][1], rot: -2.5 },
+    { id: "earR", parent: "head", x: EAR_POS[species][0], y: EAR_POS[species][1], rot: 2 },
     { id: "eyeL", parent: "head", x: -EYE_POS[species][0], y: EYE_POS[species][1] },
     { id: "eyeR", parent: "head", x: EYE_POS[species][0], y: EYE_POS[species][1] },
-    { id: "armL", parent: "body", x: -74, y: -102, rot: 8, counterParentScale: true },
-    { id: "foreL", parent: "armL", x: 0, y: limbs.armLen, rot: 3 },
-    { id: "armR", parent: "body", x: 74, y: -102, rot: -8, counterParentScale: true },
-    { id: "foreR", parent: "armR", x: 0, y: limbs.armLen, rot: -3 },
-    { id: "legL", parent: "body", x: -33, y: -4, rot: -1.5, counterParentScale: true },
-    { id: "shinL", parent: "legL", x: 0, y: limbs.legLen, rot: 1.5 },
-    { id: "legR", parent: "body", x: 33, y: -4, rot: 1.5, counterParentScale: true },
-    { id: "shinR", parent: "legR", x: 0, y: limbs.legLen, rot: -1.5 },
-    { id: "tail1", parent: "body", x: side * 74, y: -38, rot: side * 40, counterParentScale: true },
-    { id: "tail2", parent: "tail1", x: 0, y: -35, rot: side * 14 },
+    { id: "armL", parent: "body", x: -64, y: -106, rot: -28, counterParentScale: true },
+    { id: "foreL", parent: "armL", x: 0, y: limbs.armLen, rot: 56 },
+    { id: "armR", parent: "body", x: 64, y: -106, rot: 12, counterParentScale: true },
+    { id: "foreR", parent: "armR", x: 0, y: limbs.armLen, rot: -12 },
+    { id: "legL", parent: "body", x: -26, y: -4, rot: -2.5, counterParentScale: true },
+    { id: "shinL", parent: "legL", x: 0, y: limbs.legLen, rot: 2 },
+    { id: "legR", parent: "body", x: 26, y: -4, rot: 3.5, counterParentScale: true },
+    { id: "shinR", parent: "legR", x: 0, y: limbs.legLen, rot: -2 },
+    { id: "tail1", parent: "body", x: side * 68, y: -36, rot: side * 36, counterParentScale: true },
+    { id: "tail2", parent: "tail1", x: 0, y: -34, rot: side * 20 },
   ];
 
   const layers: Layer[] = [];
@@ -247,20 +588,26 @@ export function buildMascot(spec: MascotSpec): Build {
     getLayer(bone, z).shapes.push(...shapes);
   };
 
+  /* ---------------- contact floor shadow ---------------- */
+  add("root", 2, [
+    shape(ellipse(0, 4, 88, 12), { fill: p.ink, stroke: undefined, opacity: 0.12 }),
+    shape(ellipse(0, 2, 60, 7), { fill: p.ink, stroke: undefined, opacity: 0.08 }),
+  ]);
+
   /* ---------------- tail ---------------- */
   if (!isRobot && !isBlob && !isFrog) {
-    const thick = species === "fox" ? 20 : species === "bear" ? 14 : species === "bunny" ? 11 : 13;
-    const len = species === "bear" ? 26 : species === "bunny" ? 24 : 42;
+    const thick = species === "fox" ? 30 : species === "bear" ? 18 : species === "bunny" ? 14 : 17;
+    const len = species === "fox" ? 48 : species === "bear" ? 24 : species === "bunny" ? 22 : 44;
     const t1 = smooth(
       [
         [-thick * 0.45, 10],
         [thick * 0.55, 8],
-        [thick * 0.9, 2],
-        [thick * 0.75, -len * 0.45],
-        [thick * 0.4, -len * 0.9],
+        [thick * 0.95, 2],
+        [thick * 0.8, -len * 0.45],
+        [thick * 0.45, -len * 0.9],
         [0, -len - 2],
         [-thick * 0.55, -len * 0.82],
-        [-thick * 0.7, -len * 0.35],
+        [-thick * 0.75, -len * 0.35],
       ],
       true,
       0.8,
@@ -268,19 +615,19 @@ export function buildMascot(spec: MascotSpec): Build {
     add("tail1", 4, [shape(t1, { fill: p.primary })]);
     if (species === "bunny") {
       add("tail1", 4, [
-        shape(ellipse(0, -len - 4, 15, 14), { fill: p.secondary }),
-        shape(ellipse(-4, -len - 7, 5, 4), { fill: p.paper, stroke: undefined, opacity: 0.8 }),
+        shape(ellipse(0, -len - 4, 17, 16), { fill: p.secondary }),
+        shape(ellipse(-4, -len - 7, 6, 5), { fill: p.paper, stroke: undefined, opacity: 0.85 }),
       ]);
     } else {
       const t2 = smooth(
         [
           [-thick * 0.4, 6],
-          [thick * 0.48, 5],
-          [thick * 0.75, -len * 0.35],
-          [thick * 0.42, -len * 0.9],
+          [thick * 0.5, 5],
+          [thick * 0.8, -len * 0.35],
+          [thick * 0.45, -len * 0.9],
           [0, -len - 4],
-          [-thick * 0.45, -len * 0.78],
-          [-thick * 0.62, -len * 0.28],
+          [-thick * 0.48, -len * 0.78],
+          [-thick * 0.65, -len * 0.28],
         ],
         true,
         0.8,
@@ -288,30 +635,39 @@ export function buildMascot(spec: MascotSpec): Build {
       const tipColor = species === "fox" ? p.secondary : p.primary;
       add("tail2", 4, [shape(t2, { fill: tipColor })]);
       if (species === "fox") {
+        // Dramatic white plume tip for anime fox
         const tip = smooth(
           [
-            [-thick * 0.42, -len * 0.55],
-            [thick * 0.5, -len * 0.62],
-            [thick * 0.4, -len - 6],
-            [0, -len - 9],
-            [-thick * 0.5, -len - 2],
+            [-thick * 0.45, -len * 0.55],
+            [thick * 0.52, -len * 0.62],
+            [thick * 0.42, -len - 8],
+            [0, -len - 12],
+            [-thick * 0.52, -len - 4],
           ],
           true,
           0.8,
         );
-        add("tail2", 4, [shape(tip, { fill: p.secondary, stroke: undefined })]);
+        add("tail2", 4, [
+          shape(tip, { fill: p.paper, stroke: undefined }),
+          shape(smooth([[-thick * 0.2, -len * 0.58], [0, -len * 0.75], [thick * 0.2, -len * 0.62]], false, 0.6), {
+            fill: undefined,
+            stroke: p.ink,
+            width: 2.5,
+            opacity: 0.4,
+          }),
+        ]);
       }
     }
   }
 
-  /* ---------------- legs ---------------- */
+  /* ---------------- legs & planted feet ---------------- */
   const legColor = isBlob ? p.secondary : p.primary;
   for (const s of [-1, 1] as const) {
     const leg = s === -1 ? "legL" : "legR";
     const shin = s === -1 ? "shinL" : "shinR";
     if (isRobot) {
       add(leg, 6, [
-        shape(roundRect(-11, -6, 22, limbs.legLen + 8, 8), { fill: p.secondary, width: 4 }),
+        shape(roundRect(-10, -6, 20, limbs.legLen + 8, 8), { fill: p.secondary, width: 4 }),
         shape(ellipse(0, 2, 6, 6), { fill: p.accent, width: 3 }),
       ]);
       add(shin, 6, [
@@ -319,11 +675,17 @@ export function buildMascot(spec: MascotSpec): Build {
         shape(roundRect(-16, limbs.shinLen - 4, 32, 20, 8), { fill: p.secondary, width: 4 }),
       ]);
     } else {
+      const thigh = makeSeamlessUpperLimb(limbs.legLen, limbs.thigh, limbs.thigh * 0.8);
       add(leg, 6, [
-        shape(limbPath(limbs.legLen, limbs.thigh), { fill: legColor }),
+        shape(thigh.fill, { fill: legColor, stroke: undefined }),
+        shape(thigh.outline, { fill: undefined, stroke: p.ink, width: 4.5 }),
       ]);
-      add(shin, 6, [
-        shape(limbPath(limbs.shinLen, limbs.shin), { fill: legColor }),
+      // Shin with knee joint cover (eliminates puppet joint line!) and plush planted feet
+      const shinLimb = makeSeamlessLowerLimb(limbs.shinLen, limbs.shin, limbs.shin * 0.78);
+      const shinShapes: Shape[] = [
+        shape(shinLimb.fill, { fill: legColor, stroke: undefined }),
+        shape(shinLimb.outline, { fill: undefined, stroke: p.ink, width: 4.5 }),
+        // Planted plush foot with subtle toe indent
         shape(
           ellipse(
             s * limbs.footX,
@@ -333,7 +695,23 @@ export function buildMascot(spec: MascotSpec): Build {
           ),
           { fill: isBlob ? p.primary : p.secondary },
         ),
-      ]);
+        // Toe bean separation lines
+        shape(
+          polyline([
+            [s * limbs.footX - 4, limbs.footY + 2],
+            [s * limbs.footX - 4, limbs.footY + limbs.footRy - 1],
+          ]),
+          { fill: undefined, stroke: p.ink, width: 2, opacity: 0.35 },
+        ),
+        shape(
+          polyline([
+            [s * limbs.footX + 4, limbs.footY + 2],
+            [s * limbs.footX + 4, limbs.footY + limbs.footRy - 1],
+          ]),
+          { fill: undefined, stroke: p.ink, width: 2, opacity: 0.35 },
+        ),
+      ];
+      add(shin, 6, shinShapes);
     }
   }
 
@@ -371,10 +749,32 @@ export function buildMascot(spec: MascotSpec): Build {
     );
   }
 
+  // Base body silhouette
   const body = bodySilhouette(species);
   bodyShapes.push(shape(body, { fill: p.primary, width: 5 }));
 
-  // belly / chest plate
+  // Cel shade on lower body contour
+  bodyShapes.push(
+    shape(
+      smooth(
+        [
+          [-54, -2],
+          [-28, 12],
+          [0, 15],
+          [28, 12],
+          [54, -2],
+          [36, -8],
+          [0, -4],
+          [-36, -8],
+        ],
+        true,
+        0.7,
+      ),
+      { fill: p.primaryDeep, stroke: undefined, opacity: 0.4 },
+    ),
+  );
+
+  // Belly / chest plate
   if (isRobot) {
     bodyShapes.push(
       shape(roundRect(-38, -104, 76, 78, 22), {
@@ -415,13 +815,33 @@ export function buildMascot(spec: MascotSpec): Build {
             true,
             0.9,
           )
-        : ellipse(0, -56, 44, 54);
+        : ellipse(0, -56, 44, 52);
     bodyShapes.push(
-      shape(belly, { fill: p.secondary, stroke: undefined, opacity: isFrog ? 0.5 : 0.92 }),
+      shape(belly, { fill: p.secondary, stroke: undefined, opacity: isFrog ? 0.6 : 0.94 }),
     );
   }
 
-  // pattern on body
+  // Soft chest fluff / neck tuft covering the neck boundary
+  if (!isRobot) {
+    const chestTuft = smooth(
+      [
+        [-34, -136],
+        [-42, -122],
+        [-24, -116],
+        [-30, -108],
+        [0, -104],
+        [30, -108],
+        [24, -116],
+        [42, -122],
+        [34, -136],
+      ],
+      true,
+      0.7,
+    );
+    bodyShapes.push(shape(chestTuft, { fill: p.secondary, stroke: undefined, opacity: 0.9 }));
+  }
+
+  // Pattern on body
   const patternColor = p.secondary;
   if (spec.pattern === "spots") {
     const spots: Array<[number, number, number]> = [
@@ -461,7 +881,7 @@ export function buildMascot(spec: MascotSpec): Build {
     }
   }
 
-  // scarf & bow tie live on the torso
+  // Scarf with signature golden "A" brand charm tag!
   if (spec.accessories.includes("scarf")) {
     const scarfY = -128;
     bodyShapes.push(
@@ -483,15 +903,16 @@ export function buildMascot(spec: MascotSpec): Build {
         { fill: p.accent, width: 4.5 },
       ),
     );
+    // Scarf drape tail
     bodyShapes.push(
       shape(
         smooth(
           [
-            [30, scarfY + 12],
-            [48, scarfY + 22],
-            [54, scarfY + 54],
-            [40, scarfY + 48],
-            [28, scarfY + 26],
+            [28, scarfY + 12],
+            [46, scarfY + 22],
+            [52, scarfY + 54],
+            [38, scarfY + 48],
+            [26, scarfY + 26],
           ],
           true,
           0.6,
@@ -500,7 +921,37 @@ export function buildMascot(spec: MascotSpec): Build {
       ),
     );
     bodyShapes.push(
-      shape(ellipse(36, scarfY + 12, 9, 7), { fill: p.accent, width: 3.5 }),
+      shape(ellipse(34, scarfY + 12, 9, 7), { fill: p.accent, width: 3.5 }),
+    );
+    // Brand charm: Golden Anitoon "A" tag dangling from the knot
+    const charmX = 36;
+    const charmY = scarfY + 26;
+    bodyShapes.push(
+      // Jump ring
+      shape(ellipse(charmX, charmY - 6, 3, 3), { fill: "#FFC53D", width: 2 }),
+      // Coin tag
+      shape(ellipse(charmX, charmY + 2, 7.5, 7.5), { fill: "#FFC53D", width: 2.2 }),
+      shape(ellipse(charmX - 2, charmY, 5.5, 5.5), { fill: "#FFEAA0", stroke: undefined }),
+      // Engraved "A" monogram
+      shape(
+        smooth(
+          [
+            [charmX - 3.5, charmY + 5],
+            [charmX, charmY - 3],
+            [charmX + 3.5, charmY + 5],
+          ],
+          false,
+          0.2,
+        ),
+        { fill: undefined, stroke: p.ink, width: 1.8, cap: "round" },
+      ),
+      shape(
+        polyline([
+          [charmX - 2.2, charmY + 1.5],
+          [charmX + 2.2, charmY + 1.5],
+        ]),
+        { fill: undefined, stroke: p.ink, width: 1.6, cap: "round" },
+      ),
     );
   }
 
@@ -550,15 +1001,16 @@ export function buildMascot(spec: MascotSpec): Build {
       [
         [-24, 14],
         [-20, -8],
-        [big ? 2 : 6, big ? -42 : -32],
-        [big ? 34 : 24, big ? -66 : -52],
-        [big ? 40 : 30, big ? -56 : -44],
+        [big ? 2 : 6, big ? -44 : -34],
+        [big ? 34 : 24, big ? -68 : -54],
+        [big ? 40 : 30, big ? -58 : -46],
         [big ? 28 : 22, -16],
         [22, 14],
       ],
       true,
       0.55,
     );
+    // Inner ear fluff with layered tufts
     const inner = smooth(
       [
         [-10, 6],
@@ -571,6 +1023,17 @@ export function buildMascot(spec: MascotSpec): Build {
       true,
       0.55,
     );
+    const fluffTuft = smooth(
+      [
+        [-6, 4],
+        [4, -12],
+        [12, -4],
+        [18, -16],
+        [20, 2],
+      ],
+      true,
+      0.6,
+    );
     for (const s of [-1, 1] as const) {
       const bone = s === 1 ? "earR" : "earL";
       const flip = (path: Path) =>
@@ -578,6 +1041,7 @@ export function buildMascot(spec: MascotSpec): Build {
       add(bone, 20, [
         shape(flip(outer), { fill: p.primary, width: 4.5 }),
         shape(flip(inner), { fill: p.blush, stroke: undefined, opacity: 0.85 }),
+        shape(flip(fluffTuft), { fill: p.paper, stroke: undefined, opacity: 0.9 }),
       ]);
     }
   } else if (species === "bunny") {
@@ -645,11 +1109,18 @@ export function buildMascot(spec: MascotSpec): Build {
       const bone = s === 1 ? "earR" : "earL";
       const flip = (path: Path) =>
         s === 1 ? path : mapPath(path, (v) => [v[0] * -1, v[1]]);
-      add(bone, 20, [shape(flip(outer), { fill: p.primaryDeep, width: 4.5 })]);
+      add(bone, 20, [
+        shape(flip(outer), { fill: p.primaryDeep, width: 4.5 }),
+        shape(flip(smooth([[0, 10], [14, 28], [8, 52], [-4, 46]], true, 0.7)), {
+          fill: p.primary,
+          stroke: undefined,
+          opacity: 0.5,
+        }),
+      ]);
     }
   }
 
-  /* ---------------- arms ---------------- */
+  /* ---------------- arms & seamless joints ---------------- */
   for (const s of [-1, 1] as const) {
     const arm = s === -1 ? "armL" : "armR";
     const fore = s === -1 ? "foreL" : "foreR";
@@ -664,13 +1135,29 @@ export function buildMascot(spec: MascotSpec): Build {
         shape(ellipse(0, limbs.foreLen + 5, 4, 4), { fill: p.accent, stroke: undefined }),
       ]);
     } else {
+      // Upper arm: tapered smoothly toward elbow with seamless open joint
+      const upper = makeSeamlessUpperLimb(limbs.armLen, limbs.upperArm, limbs.upperArm * 0.76, -4);
       add(arm, 30, [
-        shape(limbPath(limbs.armLen, limbs.upperArm, -6), { fill: p.primary }),
+        shape(upper.fill, { fill: p.primary, stroke: undefined }),
+        shape(upper.outline, { fill: undefined, stroke: p.ink, width: 4.5 }),
       ]);
-      add(fore, 30, [
-        shape(limbPath(limbs.foreLen, limbs.foreArm), { fill: p.primary }),
-        shape(ellipse(0, limbs.foreLen + 4, limbs.hand, limbs.hand), { fill: p.secondary }),
-      ]);
+
+      // Forearm with seamless joint and toe-bean paw!
+      const pawY = limbs.foreLen + 5;
+      const lower = makeSeamlessLowerLimb(limbs.foreLen, limbs.foreArm, limbs.foreArm * 0.78);
+      const foreShapes: Shape[] = [
+        shape(lower.fill, { fill: p.primary, stroke: undefined }),
+        shape(lower.outline, { fill: undefined, stroke: p.ink, width: 4.5 }),
+        // Plush rounded paw
+        shape(ellipse(0, pawY, limbs.hand + 1, limbs.hand), { fill: p.secondary, width: 4 }),
+        // Sweet toe bean pads!
+        shape(ellipse(-5, pawY - 4, 2.6, 2.8), { fill: p.blush, stroke: undefined, opacity: 0.85 }),
+        shape(ellipse(0, pawY - 6, 2.8, 3.0), { fill: p.blush, stroke: undefined, opacity: 0.85 }),
+        shape(ellipse(5, pawY - 4, 2.6, 2.8), { fill: p.blush, stroke: undefined, opacity: 0.85 }),
+        // Heart-shaped main palm pad
+        shape(ellipse(0, pawY + 2, 5.2, 4.2), { fill: p.blush, stroke: undefined, opacity: 0.85 }),
+      ];
+      add(fore, 30, foreShapes);
     }
   }
 
@@ -679,9 +1166,35 @@ export function buildMascot(spec: MascotSpec): Build {
   const head = headSilhouette(species);
   headShapes.push(shape(head, { fill: p.primary, width: 5 }));
 
+  // Soft cel-shading under chin & lower cheeks
+  headShapes.push(
+    shape(
+      smooth(
+        [
+          [-62, -18],
+          [-34, -2],
+          [0, 2],
+          [34, -2],
+          [62, -18],
+          [48, -26],
+          [0, -18],
+          [-48, -26],
+        ],
+        true,
+        0.7,
+      ),
+      { fill: p.primaryDeep, stroke: undefined, opacity: 0.35 },
+    ),
+  );
+
+  // Soft forehead highlight
+  headShapes.push(
+    shape(ellipse(0, -118, 38, 14), { fill: p.paper, stroke: undefined, opacity: 0.22 }),
+  );
+
   if (spec.pattern === "patch") {
     headShapes.push(
-      shape(ellipse(-31, -78, 35, 37), {
+      shape(ellipse(-31, -74, 34, 36), {
         fill: p.secondary,
         stroke: undefined,
         opacity: 0.95,
@@ -696,6 +1209,10 @@ export function buildMascot(spec: MascotSpec): Build {
       );
       headShapes.push(
         shape(ellipse(s * 38, -108, 22, 21), { fill: p.secondary, stroke: undefined, opacity: 0.55 }),
+      );
+      // Frog eye dome highlight
+      headShapes.push(
+        shape(ellipse(s * 38 - 4, -114, 7, 5), { fill: p.paper, stroke: undefined, opacity: 0.75 }),
       );
     }
   }
@@ -742,67 +1259,62 @@ export function buildMascot(spec: MascotSpec): Build {
     );
     headShapes.push(
       shape(ellipse(0, -170, 9, 9), { fill: p.accent, width: 4 }),
+      shape(ellipse(-2, -172, 3, 3), { fill: p.paper, stroke: undefined, opacity: 0.85 }),
     );
   }
 
   if (species === "blob") {
+    // Glossy jelly light reflections
     headShapes.push(
       shape(
         smooth(
           [
-            [-30, -104],
-            [-38, -118],
-            [-28, -126],
-            [-14, -120],
-            [-6, -128],
-            [6, -122],
-            [18, -130],
-            [30, -120],
-            [44, -124],
-            [48, -110],
+            [-24, -114],
+            [-36, -122],
+            [-20, -128],
+            [0, -132],
+            [24, -128],
+            [12, -120],
           ],
-          false,
-          0.8,
+          true,
+          0.75,
         ),
-        { fill: undefined, stroke: p.ink, width: 4, opacity: 0.55 },
+        { fill: p.paper, stroke: undefined, opacity: 0.4 },
       ),
     );
   }
 
-  if (isRobot) {
-    // visor glow is drawn by the eye layers
-  } else {
-    const muzzle =
-      species === "dog" || species === "fox" || species === "bear"
-        ? smooth(
-            [
-              [0, -58],
-              [30, -56],
-              [46, -38],
-              [42, -14],
-              [22, 2],
-              [0, 4],
-              [-22, 2],
-              [-42, -14],
-              [-46, -38],
-              [-30, -56],
-            ],
-            true,
-            0.9,
-          )
-        : null;
-    if (muzzle) {
-      headShapes.push(
-        shape(muzzle, {
-          fill: species === "bear" ? p.secondary : p.paper,
-          stroke: undefined,
-          opacity: species === "bear" ? 0.85 : 0.92,
-        }),
-      );
-    }
+  // Muzzle for dog, fox, bear
+  const muzzle =
+    species === "dog" || species === "fox" || species === "bear"
+      ? smooth(
+          [
+            [0, -56],
+            [28, -54],
+            [44, -36],
+            [40, -14],
+            [22, 2],
+            [0, 4],
+            [-22, 2],
+            [-40, -14],
+            [-44, -36],
+            [-28, -54],
+          ],
+          true,
+          0.9,
+        )
+      : null;
+  if (muzzle) {
+    headShapes.push(
+      shape(muzzle, {
+        fill: species === "bear" ? p.secondary : p.paper,
+        stroke: undefined,
+        opacity: species === "bear" ? 0.85 : 0.94,
+      }),
+    );
   }
 
-  // head pattern
+  // Head patterns
   if (spec.pattern === "spots") {
     headShapes.push(
       shape(ellipse(47, -104, 11, 10), {
@@ -830,7 +1342,7 @@ export function buildMascot(spec: MascotSpec): Build {
     }
   }
 
-  // blush
+  // Anime rosy cheeks + cute diagonal blush ticks
   for (const s of [-1, 1] as const) {
     if (isRobot) {
       headShapes.push(
@@ -841,17 +1353,35 @@ export function buildMascot(spec: MascotSpec): Build {
         }),
       );
     } else {
+      // Rosy oval
       headShapes.push(
-        shape(ellipse(s * 49, -34, 13, 7), {
+        shape(ellipse(s * 49, -34, 14, 8), {
           fill: p.blush,
           stroke: undefined,
-          opacity: 0.55,
+          opacity: expression === "shy" ? 0.8 : 0.58,
         }),
+      );
+      // 2 diagonal anime blush hatch lines
+      headShapes.push(
+        shape(
+          polyline([
+            [s * 45, -31],
+            [s * 48, -37],
+          ]),
+          { fill: undefined, stroke: p.primaryDeep, width: 1.8, opacity: 0.5 },
+        ),
+        shape(
+          polyline([
+            [s * 51, -31],
+            [s * 54, -37],
+          ]),
+          { fill: undefined, stroke: p.primaryDeep, width: 1.8, opacity: 0.5 },
+        ),
       );
     }
   }
 
-  // freckles
+  // Freckles
   if (spec.pattern === "freckles") {
     for (const s of [-1, 1] as const) {
       for (let i = 0; i < 3; i++) {
@@ -866,33 +1396,93 @@ export function buildMascot(spec: MascotSpec): Build {
     }
   }
 
-  // brows
-  if (spec.vibe === "mischievous" || spec.vibe === "heroic" || spec.vibe === "chaotic") {
-    for (const s of [-1, 1] as const) {
-      const lift = spec.vibe === "mischievous" ? (s === 1 ? -8 : 2) : 0;
-      headShapes.push(
-        shape(
-          smooth(
-            [
-              [s * 14, -104 + lift - 3],
-              [s * 28, -111 + lift],
-              [s * 44, -105 + lift + 1],
-            ],
-            false,
-            0.7,
-          ),
-          {
-            fill: undefined,
-            stroke: p.ink,
-            width: 4.5,
-            cap: "round",
-          },
-        ),
+  // Expressive anime eyebrows tailored to expression!
+  for (const s of [-1, 1] as const) {
+    let browPath: Path;
+    if (expression === "excited") {
+      browPath = smooth(
+        [
+          [s * 14, -110],
+          [s * 30, -120],
+          [s * 46, -112],
+        ],
+        false,
+        0.7,
+      );
+    } else if (expression === "shy") {
+      browPath = smooth(
+        [
+          [s * 14, -112],
+          [s * 28, -108],
+          [s * 44, -102],
+        ],
+        false,
+        0.7,
+      );
+    } else if (expression === "sleepy") {
+      browPath = smooth(
+        [
+          [s * 16, -100],
+          [s * 30, -102],
+          [s * 44, -100],
+        ],
+        false,
+        0.6,
+      );
+    } else if (expression === "determined") {
+      browPath = smooth(
+        [
+          [s * 14, -102],
+          [s * 30, -112],
+          [s * 46, -116],
+        ],
+        false,
+        0.7,
+      );
+    } else if (expression === "mischievous") {
+      const lift = s === 1 ? -12 : 2;
+      browPath = smooth(
+        [
+          [s * 14, -104 + lift],
+          [s * 28, -114 + lift],
+          [s * 44, -108 + lift],
+        ],
+        false,
+        0.7,
+      );
+    } else if (expression === "surprised") {
+      browPath = smooth(
+        [
+          [s * 16, -116],
+          [s * 30, -126],
+          [s * 46, -118],
+        ],
+        false,
+        0.7,
+      );
+    } else {
+      // happy (default)
+      browPath = smooth(
+        [
+          [s * 16, -104],
+          [s * 30, -112],
+          [s * 46, -106],
+        ],
+        false,
+        0.7,
       );
     }
+    headShapes.push(
+      shape(browPath, {
+        fill: undefined,
+        stroke: p.ink,
+        width: 4.2,
+        cap: "round",
+      }),
+    );
   }
 
-  // nose
+  // Tiny cute button nose
   const noseY = species === "frog" ? -44 : -46;
   if (isRobot) {
     headShapes.push(
@@ -904,7 +1494,7 @@ export function buildMascot(spec: MascotSpec): Build {
   } else if (species === "frog") {
     for (const s of [-1, 1] as const) {
       headShapes.push(
-        shape(ellipse(s * 10, noseY, 2.5, 2), {
+        shape(ellipse(s * 9, noseY, 2.5, 2), {
           fill: p.ink,
           stroke: undefined,
           opacity: 0.75,
@@ -914,48 +1504,24 @@ export function buildMascot(spec: MascotSpec): Build {
   } else if (species === "bunny") {
     headShapes.push(
       shape(
-        smooth(
-          [[-8, noseY - 2], [8, noseY - 2], [0, noseY + 7]],
-          true,
-          0.4,
-        ),
-        { fill: p.blush, width: 3 },
+        smooth([[-7, noseY - 2], [7, noseY - 2], [0, noseY + 6]], true, 0.4),
+        { fill: p.blush, width: 2.8 },
       ),
     );
   } else {
     headShapes.push(
       shape(
-        smooth(
-          [[-8, noseY - 2], [8, noseY - 2], [0, noseY + 7]],
-          true,
-          0.4,
-        ),
+        smooth([[-8, noseY - 2], [8, noseY - 2], [0, noseY + 6]], true, 0.4),
         { fill: p.ink, stroke: undefined },
       ),
     );
   }
 
-  // mouth
-  const my = species === "frog" ? -28 : -28;
-  if (spec.mouth === "smile") {
-    const w = species === "frog" ? 28 : 16;
-    headShapes.push(
-      shape(
-        smooth(
-          [
-            [-w, my],
-            [-w * 0.45, my + 10],
-            [w * 0.45, my + 10],
-            [w, my],
-          ],
-          false,
-          0.8,
-        ),
-        { fill: undefined, stroke: p.ink, width: 5 },
-      ),
-    );
-  } else if (spec.mouth === "grin") {
-    const w = species === "frog" ? 36 : 22;
+  // Expressive anime mouth tailored to expression & mouth style
+  const my = species === "frog" ? -26 : -26;
+  if (expression === "excited" || spec.mouth === "grin") {
+    // Wide joyful open grin with teeth and tongue
+    const w = species === "frog" ? 34 : 22;
     const mouth = smooth(
       [
         [-w, my - 2],
@@ -971,6 +1537,7 @@ export function buildMascot(spec: MascotSpec): Build {
       0.55,
     );
     headShapes.push(shape(mouth, { fill: p.ink, width: 4.5 }));
+    // Pink tongue
     headShapes.push(
       shape(
         smooth(
@@ -985,9 +1552,10 @@ export function buildMascot(spec: MascotSpec): Build {
           true,
           0.5,
         ),
-        { fill: p.blush, stroke: undefined, opacity: 0.9 },
+        { fill: p.blush, stroke: undefined, opacity: 0.95 },
       ),
     );
+    // Upper white tooth bar
     headShapes.push(
       shape(roundRect(-w * 0.62, my + 1, w * 1.24, 6, 3), {
         fill: p.paper,
@@ -995,39 +1563,76 @@ export function buildMascot(spec: MascotSpec): Build {
         opacity: 0.95,
       }),
     );
-  } else if (spec.mouth === "smirk") {
+  } else if (expression === "shy") {
+    // Sweet anime ":3" cat mouth
+    headShapes.push(
+      shape(
+        smooth([[-14, my + 2], [-7, my + 6], [0, my + 2]], false, 0.7),
+        { fill: undefined, stroke: p.ink, width: 4.5, cap: "round" },
+      ),
+      shape(
+        smooth([[0, my + 2], [7, my + 6], [14, my + 2]], false, 0.7),
+        { fill: undefined, stroke: p.ink, width: 4.5, cap: "round" },
+      ),
+    );
+  } else if (expression === "mischievous" || spec.mouth === "smirk") {
+    // Sly anime smirk with tiny tooth / fang
     headShapes.push(
       shape(
         smooth(
           [
             [-14, my + 1],
-            [-2, my + 6],
-            [10, my + 1],
-            [17, my - 5],
+            [-2, my + 5],
+            [10, my],
+            [18, my - 6],
           ],
           false,
           0.7,
         ),
-        { fill: undefined, stroke: p.ink, width: 5 },
+        { fill: undefined, stroke: p.ink, width: 4.8, cap: "round" },
+      ),
+      // Cute tiny white fang
+      shape(
+        smooth([[9, my + 1], [14, my - 2], [11.5, my + 7]], true, 0.3),
+        { fill: p.paper, width: 1.8 },
       ),
     );
-  } else if (spec.mouth === "o") {
+  } else if (expression === "surprised" || spec.mouth === "o") {
+    // Cute open "o" mouth
     headShapes.push(
-      shape(ellipse(0, my + 4, 7, 9), { fill: p.ink, width: 3.5 }),
+      shape(ellipse(0, my + 4, 8, 11), { fill: p.ink, width: 3.5 }),
+      shape(ellipse(0, my + 8, 4.5, 4), { fill: p.blush, stroke: undefined }),
     );
-    headShapes.push(
-      shape(ellipse(0, my + 8, 4, 3), { fill: p.blush, stroke: undefined }),
-    );
-  } else {
+  } else if (expression === "determined") {
+    // Confident smirk
     headShapes.push(
       shape(
-        smooth([[-13, my + 2], [0, my + 4], [13, my + 1]], false, 0.5),
-        { fill: undefined, stroke: p.ink, width: 5 },
+        smooth([[-13, my + 4], [0, my + 1], [14, my - 4]], false, 0.65),
+        { fill: undefined, stroke: p.ink, width: 4.6, cap: "round" },
+      ),
+    );
+  } else {
+    // Happy open smile
+    const w = species === "frog" ? 28 : 17;
+    headShapes.push(
+      shape(
+        smooth(
+          [
+            [-w, my],
+            [-w * 0.45, my + 10],
+            [w * 0.45, my + 10],
+            [w, my],
+          ],
+          false,
+          0.8,
+        ),
+        { fill: undefined, stroke: p.ink, width: 4.8, cap: "round" },
       ),
     );
   }
 
-  if (species === "dog") {
+  // Dog tongue peeking
+  if (species === "dog" && (expression === "happy" || expression === "excited")) {
     headShapes.push(
       shape(
         smooth(
@@ -1046,37 +1651,39 @@ export function buildMascot(spec: MascotSpec): Build {
     );
   }
 
+  // Bunny buck teeth
   if (species === "bunny") {
     for (const s of [-1, 1] as const) {
       headShapes.push(
-        shape(roundRect(s * 8 - 4, my + 6, 8, 14, 3), {
+        shape(roundRect(s * 7 - 3.5, my + 6, 7, 12, 3), {
           fill: p.paper,
-          width: 2.8,
+          width: 2.6,
         }),
       );
     }
   }
 
+  // Cat & Fox delicate tapered whiskers
   if (species === "cat" || species === "fox") {
     for (const s of [-1, 1] as const) {
-      for (let i = 0; i < 3; i++) {
-        const y = -48 + i * 9;
+      for (let i = 0; i < 2; i++) {
+        const y = -44 + i * 11;
         headShapes.push(
           shape(
             smooth(
               [
-                [s * 26, y],
-                [s * 48, y - 3 + i * 2],
-                [s * 70, y - 6 + i * 4],
+                [s * 32, y],
+                [s * 58, y - 4 + i * 5],
+                [s * 82, y - 7 + i * 8],
               ],
               false,
-              0.35,
+              0.4,
             ),
             {
               fill: undefined,
               stroke: p.ink,
               width: 2.2,
-              opacity: 0.55,
+              opacity: 0.6,
             },
           ),
         );
@@ -1084,89 +1691,150 @@ export function buildMascot(spec: MascotSpec): Build {
     }
   }
 
-  if (spec.eyes === "visor" && !isRobot) {
-    headShapes.push(
-      shape(roundRect(-73, -100, 146, 43, 21), { fill: p.ink, width: 4.5 }),
-    );
-    headShapes.push(
-      shape(
-        smooth([[-54, -86], [0, -92], [54, -86]], false, 0.6),
-        { fill: undefined, stroke: p.accent, width: 3, opacity: 0.55 },
-      ),
-    );
-    for (const s of [-1, 1] as const) {
-      headShapes.push(
-        shape(ellipse(s * 68, -78, 2.6, 2.6), {
-          fill: p.accent,
-          stroke: undefined,
-          opacity: 0.9,
-        }),
-      );
-    }
-  }
-
   add("head", 40, headShapes);
 
-  /* ---------------- eyes ---------------- */
+  /* ---------------- eyes (large anime glossy eyes with two catchlights) ---------------- */
   const eyeZ = spec.eyes === "visor" && isRobot ? 46 : 50;
   for (const s of [-1, 1] as const) {
     const bone = s === -1 ? "eyeL" : "eyeR";
     const eyes: Shape[] = [];
-    if (spec.eyes === "sparkle") {
-      eyes.push(shape(ellipse(0, 0, 16, 18), { fill: p.paper, width: 3.6 }));
-      eyes.push(shape(ellipse(0, 2, 8, 10), { fill: p.ink, stroke: undefined }));
-      eyes.push(shape(ellipse(-3, -3, 3.4, 3.4), { fill: p.paper, stroke: undefined }));
-      eyes.push(shape(ellipse(4, 6, 1.7, 1.7), { fill: p.paper, stroke: undefined, opacity: 0.8 }));
+
+    // Wink on mischievous expression (right eye winks, left eye open sparkle!)
+    const isWink = expression === "mischievous" && s === 1;
+
+    if (isWink || spec.eyes === "happy") {
+      // Classic joyful curved anime arch (^ . ^) with eyelash flick
+      eyes.push(
+        shape(
+          smooth([[-18, 4], [-9, -9], [9, -9], [18, 4]], false, 0.8),
+          { fill: undefined, stroke: p.ink, width: 5.5, cap: "round" },
+        ),
+        shape(
+          polyline([[15, 2], [22, -3]]),
+          { fill: undefined, stroke: p.ink, width: 4, cap: "round" },
+        ),
+      );
+    } else if (spec.eyes === "sleepy" || expression === "sleepy") {
+      // Heavy sleepy eyelid half-covering glossy iris
+      eyes.push(
+        shape(ellipse(0, 0, 19, 22), { fill: p.paper, width: 3.6 }),
+        shape(ellipse(0, 6, 14, 16), { fill: p.accent, stroke: undefined }),
+        shape(ellipse(0, 6, 7.5, 10), { fill: p.ink, stroke: undefined }),
+        shape(ellipse(-4, 3, 4.2, 4.2), { fill: p.paper, stroke: undefined }),
+        shape(
+          smooth([[-20, -2], [-10, 5], [10, 5], [20, -2]], false, 0.7),
+          { fill: undefined, stroke: p.ink, width: 5.5, cap: "round" },
+        ),
+        shape(
+          smooth([[-14, -8], [0, -6], [14, -8]], false, 0.6),
+          { fill: undefined, stroke: p.ink, width: 2, opacity: 0.3 },
+        ),
+      );
     } else if (spec.eyes === "dot") {
-      eyes.push(shape(ellipse(0, 0, 9, 10), { fill: p.ink, stroke: undefined }));
-      eyes.push(shape(ellipse(-2.6, -3, 2.6, 2.6), { fill: p.paper, stroke: undefined }));
-    } else if (spec.eyes === "sleepy") {
+      // Glossy chibi bead eye with two catchlights
       eyes.push(
+        shape(ellipse(0, 0, 14, 16), { fill: p.ink, stroke: undefined }),
+        shape(ellipse(-4, -4.5, 4.8, 5.2), { fill: p.paper, stroke: undefined }),
+        shape(ellipse(4, 5, 2.5, 2.5), { fill: p.paper, stroke: undefined, opacity: 0.85 }),
         shape(
-          smooth([[-13, -1], [0, 7], [13, -1]], false, 0.75),
-          { fill: undefined, stroke: p.ink, width: 5.5 },
+          smooth([[-15, -8], [0, -14], [15, -8]], false, 0.6),
+          { fill: undefined, stroke: p.ink, width: 3.8, cap: "round" },
         ),
       );
+    } else if (spec.eyes === "visor") {
+      // Visor eye
       eyes.push(
-        shape(
-          smooth([[-11, 8], [0, 10], [11, 8]], false, 0.6),
-          { fill: undefined, stroke: p.ink, width: 2, opacity: 0.25 },
-        ),
-      );
-    } else if (spec.eyes === "happy") {
-      eyes.push(
-        shape(
-          smooth([[-14, 5], [0, -7], [14, 5]], false, 0.8),
-          { fill: undefined, stroke: p.ink, width: 5.5 },
-        ),
+        shape(roundRect(-15, -8, 30, 16, 7), { fill: p.ink, stroke: undefined }),
+        shape(roundRect(-11, -6, 22, 12, 5), { fill: p.accent, stroke: undefined }),
+        shape(ellipse(0, 0, 6, 5), { fill: p.paper, stroke: undefined }),
       );
     } else {
-      // visor glow
+      // Large glossy anime eye with sclera, two-tone iris, pupil, TWO catchlights, lash flick
+      const gazeY = expression === "shy" ? 3 : 1;
+      const gazeX = expression === "shy" ? -s * 1.5 : 0;
+      // 1. Sclera
+      eyes.push(shape(ellipse(0, 0, 20, 25), { fill: p.paper, width: 3.6 }));
+      // 2. Outer iris
+      eyes.push(shape(ellipse(gazeX, gazeY + 2, 15, 19), { fill: p.accent, stroke: undefined }));
+      // 3. Iris top shadow
+      eyes.push(shape(ellipse(gazeX, gazeY - 3, 15, 11), { fill: p.ink, stroke: undefined, opacity: 0.35 }));
+      // 4. Iris bottom glass reflection
       eyes.push(
-        shape(ellipse(0, 0, 9, 7), {
-          fill: p.paper,
-          stroke: undefined,
-        }),
+        shape(
+          smooth(
+            [
+              [gazeX - 11, gazeY + 7],
+              [gazeX - 6, gazeY + 15],
+              [gazeX, gazeY + 16],
+              [gazeX + 6, gazeY + 15],
+              [gazeX + 11, gazeY + 7],
+              [gazeX, gazeY + 9],
+            ],
+            true,
+            0.6,
+          ),
+          { fill: p.paper, stroke: undefined, opacity: 0.45 },
+        ),
       );
+      // 5. Dark center pupil
+      eyes.push(shape(ellipse(gazeX, gazeY + 2, 8, 11), { fill: p.ink, stroke: undefined }));
+      // 6. Catchlight 1 (large primary)
+      eyes.push(shape(ellipse(gazeX - 5, gazeY - 4, 5.2, 5.8), { fill: p.paper, stroke: undefined }));
+      // 7. Catchlight 2 (sweet secondary)
+      eyes.push(shape(ellipse(gazeX + 5, gazeY + 8, 2.8, 2.8), { fill: p.paper, stroke: undefined, opacity: 0.9 }));
+      // 8. Cute star sparkle if excited
+      if (expression === "excited") {
+        eyes.push(shape(star(gazeX + 6, gazeY - 5, 3.6), { fill: p.paper, stroke: undefined }));
+      }
+      // 9. Bold curved anime top eyelash line with outer corner flick
       eyes.push(
-        shape(ellipse(0, 0, 4.5, 4.5), {
-          fill: p.accent,
-          stroke: undefined,
-        }),
+        shape(
+          smooth([[-19, -6], [-10, -22], [5, -22], [20, -14], [25, -18]], false, 0.75),
+          { fill: undefined, stroke: p.ink, width: 5.2, cap: "round" },
+        ),
+      );
+      // 10. Delicate lower lid rim
+      eyes.push(
+        shape(
+          smooth([[-12, 21], [0, 23], [12, 21]], false, 0.6),
+          { fill: undefined, stroke: p.ink, width: 2.2, opacity: 0.5 },
+        ),
       );
     }
     add(bone, eyeZ, eyes);
   }
 
-  /* ---------------- top accessories ---------------- */
+  /* ---------------- top accessories & cute ahoge hair tuft ---------------- */
   const top: Shape[] = [];
+
+  // Adorable ahoge / hair tuft on headTop for that signature anime-plush charm!
+  if (!isRobot && !isFrog) {
+    top.push(
+      shape(
+        smooth(
+          [
+            [0, -135],
+            [6, -148],
+            [-4, -162],
+            [8, -172],
+            [14, -162],
+            [4, -150],
+            [0, -135],
+          ],
+          true,
+          0.65,
+        ),
+        { fill: p.primary, width: 3.5 },
+      ),
+    );
+  }
 
   if (spec.accessories.includes("glasses")) {
     const zGlasses = 62;
     const lenses: Shape[] = [];
     for (const s of [-1, 1] as const) {
       lenses.push(
-        shape(ellipse(s * 31, -78, 26, 24), {
+        shape(ellipse(s * 32, -74, 27, 25), {
           fill: p.paper,
           stroke: p.ink,
           width: 4.5,
@@ -1174,7 +1842,7 @@ export function buildMascot(spec: MascotSpec): Build {
         }),
       );
       lenses.push(
-        shape(ellipse(s * 31, -78, 26, 24), {
+        shape(ellipse(s * 32, -74, 27, 25), {
           fill: undefined,
           stroke: p.ink,
           width: 5,
@@ -1183,7 +1851,7 @@ export function buildMascot(spec: MascotSpec): Build {
     }
     lenses.push(
       shape(
-        smooth([[-6, -78], [0, -82], [6, -78]], false, 0.5),
+        smooth([[-6, -74], [0, -78], [6, -74]], false, 0.5),
         { fill: undefined, stroke: p.ink, width: 4.5 },
       ),
     );
@@ -1192,8 +1860,8 @@ export function buildMascot(spec: MascotSpec): Build {
         shape(
           smooth(
             [
-              [s * 57, -80],
-              [s * 66, -88],
+              [s * 59, -76],
+              [s * 68, -84],
             ],
             false,
             0.3,

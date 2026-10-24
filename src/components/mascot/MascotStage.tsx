@@ -97,6 +97,8 @@ export function MascotStage({
   );
 
   const layerRefs = useRef<Record<string, SVGGElement | null>>({});
+  const shadowOuterRef = useRef<SVGEllipseElement | null>(null);
+  const shadowInnerRef = useRef<SVGEllipseElement | null>(null);
   const rigRefs = useRef<{
     lines: Record<string, SVGLineElement | null>;
     joints: Record<string, SVGCircleElement | null>;
@@ -124,6 +126,16 @@ export function MascotStage({
       const el = layerRefs.current[layer.bone];
       const m = p.matrices[layer.bone];
       if (el && m) el.setAttribute("transform", matrixString(m));
+    }
+    if (shadow && shadowOuterRef.current && shadowInnerRef.current) {
+      const lift = p.lift ?? 0;
+      const factor = Math.max(0.35, 1 - lift / 120);
+      shadowOuterRef.current.setAttribute("rx", `${(104 * factor).toFixed(1)}`);
+      shadowOuterRef.current.setAttribute("ry", `${(14 * factor).toFixed(1)}`);
+      shadowOuterRef.current.setAttribute("opacity", `${(0.12 * factor).toFixed(3)}`);
+      shadowInnerRef.current.setAttribute("rx", `${(70 * factor).toFixed(1)}`);
+      shadowInnerRef.current.setAttribute("ry", `${(8 * factor).toFixed(1)}`);
+      shadowInnerRef.current.setAttribute("opacity", `${(0.08 * factor).toFixed(3)}`);
     }
     if (showRig) {
       for (const bone of rigBones) {
@@ -253,16 +265,18 @@ export function MascotStage({
         {shadow && (
           <g aria-hidden="true">
             <ellipse
+              ref={shadowOuterRef}
               cx={build.stage.w / 2}
-              cy={build.stage.ground + 4}
+              cy={build.stage.ground - 8}
               rx="104"
               ry="14"
               fill="#17151C"
               opacity="0.12"
             />
             <ellipse
+              ref={shadowInnerRef}
               cx={build.stage.w / 2}
-              cy={build.stage.ground + 1}
+              cy={build.stage.ground - 8}
               rx="70"
               ry="8"
               fill="#17151C"

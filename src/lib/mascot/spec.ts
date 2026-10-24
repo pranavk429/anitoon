@@ -44,6 +44,17 @@ export const PATTERN_IDS = [
 ] as const;
 export type Pattern = (typeof PATTERN_IDS)[number];
 
+export const EXPRESSION_IDS = [
+  "happy",
+  "excited",
+  "shy",
+  "sleepy",
+  "determined",
+  "mischievous",
+  "surprised",
+] as const;
+export type ExpressionId = (typeof EXPRESSION_IDS)[number];
+
 export const ACCESSORY_IDS = [
   "glasses",
   "cap",
@@ -64,6 +75,7 @@ export type MascotSpec = {
   accent: string;
   ink: string;
   vibe: Vibe;
+  expression: ExpressionId;
   eyes: EyeStyle;
   mouth: MouthStyle;
   pattern: Pattern;
@@ -150,6 +162,33 @@ export const VIBE_META: Record<
   heroic: { label: "Heroic", emoji: "★", blurb: "Chin up. Cape optional. Always ready." },
   sleepy: { label: "Sleepy", emoji: "☾", blurb: "Lowercase energy. Runs on naps." },
   mischievous: { label: "Mischievous", emoji: "◆", blurb: "Knows exactly what it's doing." },
+};
+
+export const EXPRESSION_META: Record<
+  ExpressionId,
+  { label: string; emoji: string; blurb: string }
+> = {
+  happy: { label: "Happy", emoji: "✿", blurb: "Warm open smile & gentle eye sparkle." },
+  excited: { label: "Excited", emoji: "★", blurb: "Starry eyes & joyful wide grin!" },
+  shy: { label: "Shy", emoji: "♡", blurb: "Rosy cheek blush & sweet delicate smile." },
+  sleepy: { label: "Sleepy", emoji: "☾", blurb: "Cozy half-lids and peaceful rest." },
+  determined: { label: "Determined", emoji: "◆", blurb: "Focused perked brows and confident smirk." },
+  mischievous: { label: "Mischievous", emoji: "⚡", blurb: "Cheeky wink & sly anime grin." },
+  surprised: { label: "Surprised", emoji: "○", blurb: "Wide glossy eyes & cute open mouth." },
+};
+
+/** The face defaults an expression should snap to when chosen. */
+export const EXPRESSION_FACE: Record<
+  ExpressionId,
+  { eyes: EyeStyle; mouth: MouthStyle }
+> = {
+  happy: { eyes: "sparkle", mouth: "smile" },
+  excited: { eyes: "sparkle", mouth: "grin" },
+  shy: { eyes: "dot", mouth: "smile" },
+  sleepy: { eyes: "sleepy", mouth: "o" },
+  determined: { eyes: "dot", mouth: "flat" },
+  mischievous: { eyes: "sparkle", mouth: "smirk" },
+  surprised: { eyes: "sparkle", mouth: "o" },
 };
 
 export const ACCESSORY_META: Record<Accessory, { label: string }> = {
@@ -517,21 +556,25 @@ function findName(raw: string): string | null {
   return null;
 }
 
-function defaultEyes(vibe: Vibe, species: SpeciesId): EyeStyle {
-  if (species === "robot") return "visor";
-  if (vibe === "sleepy") return "sleepy";
-  if (vibe === "chaotic" || vibe === "sunny") return "sparkle";
-  if (vibe === "calm") return "dot";
-  return "dot";
-}
+const expressionPatterns: Array<[ExpressionId, RegExp]> = [
+  ["excited", /\b(excited|hyped|pumped|thrilled|sparkly|hyper|ecstatic)\b/],
+  ["sleepy", /\b(sleepy|tired|drowsy|napping|cozy|exhausted|lazy)\b/],
+  ["shy", /\b(shy|bashful|timid|blushing|sweet|gentle|cute|modest)\b/],
+  ["determined", /\b(determined|heroic|brave|confident|focused|fierce|resolute|bold)\b/],
+  ["mischievous", /\b(mischievous|sneaky|sly|smug|cheeky|cunning|trouble|rascal)\b/],
+  ["surprised", /\b(surprised|shocked|amazed|astonished|gasp|in shock|wow)\b/],
+  ["happy", /\b(happy|cheerful|joyful|sunny|smiling|glad|delighted|pleased)\b/],
+];
 
-function defaultMouth(vibe: Vibe, species: SpeciesId): MouthStyle {
-  if (vibe === "sleepy") return "o";
-  if (vibe === "chaotic") return "grin";
-  if (vibe === "mischievous") return "smirk";
-  if (vibe === "heroic") return "grin";
-  if (species === "frog") return "grin";
-  return "smile";
+export function defaultExpression(vibe: Vibe, species?: SpeciesId): ExpressionId {
+  if (species === "robot") return "determined";
+  if (vibe === "sunny") return "happy";
+  if (vibe === "chaotic") return "excited";
+  if (vibe === "calm") return "shy";
+  if (vibe === "heroic") return "determined";
+  if (vibe === "sleepy") return "sleepy";
+  if (vibe === "mischievous") return "mischievous";
+  return "happy";
 }
 
 export function createSpec(partial: Partial<MascotSpec> = {}): MascotSpec {
@@ -540,6 +583,8 @@ export function createSpec(partial: Partial<MascotSpec> = {}): MascotSpec {
   const species = partial.species ?? pick(rand, SPECIES_IDS);
   const meta = SPECIES_META[species];
   const vibe = partial.vibe ?? pick(rand, VIBE_IDS);
+  const expression = partial.expression ?? defaultExpression(vibe, species);
+  const face = EXPRESSION_FACE[expression];
   return {
     v: 1,
     name: partial.name ?? pick(rand, NAMES),
@@ -548,8 +593,9 @@ export function createSpec(partial: Partial<MascotSpec> = {}): MascotSpec {
     accent: partial.accent ?? meta.defaultAccent,
     ink: partial.ink ?? "#17141F",
     vibe,
-    eyes: partial.eyes ?? defaultEyes(vibe, species),
-    mouth: partial.mouth ?? defaultMouth(vibe, species),
+    expression,
+    eyes: partial.eyes ?? (species === "robot" ? "visor" : face.eyes),
+    mouth: partial.mouth ?? face.mouth,
     pattern: partial.pattern ?? "none",
     accessories: partial.accessories ?? [],
     tagline: partial.tagline ?? pick(rand, TAGLINES[vibe]),
@@ -563,6 +609,7 @@ export function randomSpec(seed = Math.floor(Math.random() * 2 ** 31)): MascotSp
   const meta = SPECIES_META[species];
   const palette = pick(rand, PALETTE_PRESETS);
   const vibe = pick(rand, VIBE_IDS);
+  const expression = pick(rand, EXPRESSION_IDS);
   const usePreset = rand() > 0.5;
   const accessories: Accessory[] = [];
   const accessoryPool = ACCESSORY_IDS.filter(
@@ -580,8 +627,7 @@ export function randomSpec(seed = Math.floor(Math.random() * 2 ** 31)): MascotSp
     primary: usePreset ? palette.primary : meta.defaultPrimary,
     accent: usePreset ? palette.accent : meta.defaultAccent,
     vibe,
-    eyes: defaultEyes(vibe, species),
-    mouth: defaultMouth(vibe, species),
+    expression,
     pattern: pick(rand, patterns),
     accessories,
     tagline: pick(rand, TAGLINES[vibe]),
@@ -620,6 +666,9 @@ export function parsePrompt(promptRaw: string, seedOverride?: number): ParsedPro
     else vibe = pick(rand, ["sunny", "chaotic", "calm", "mischievous"] as Vibe[]);
   }
 
+  let expression: ExpressionId | null = null;
+  for (const [id, re] of expressionPatterns) if (re.test(lower)) { expression = id; break; }
+
   let eyes: EyeStyle | null = null;
   for (const [id, re] of eyePatterns) if (re.test(lower)) { eyes = id; break; }
   let mouth: MouthStyle | null = null;
@@ -652,8 +701,10 @@ export function parsePrompt(promptRaw: string, seedOverride?: number): ParsedPro
 
   const name = findName(prompt) ?? pick(rand, NAMES);
   const tagline = pick(rand, TAGLINES[vibe]);
-  const finalEyes = eyes ?? defaultEyes(vibe, species);
-  const finalMouth = mouth ?? defaultMouth(vibe, species);
+  const finalExpression = expression ?? defaultExpression(vibe, species);
+  const face = EXPRESSION_FACE[finalExpression];
+  const finalEyes = eyes ?? (species === "robot" ? "visor" : face.eyes);
+  const finalMouth = mouth ?? face.mouth;
 
   const spec = createSpec({
     name,
@@ -662,6 +713,7 @@ export function parsePrompt(promptRaw: string, seedOverride?: number): ParsedPro
     accent,
     ink: "#17141F",
     vibe,
+    expression: finalExpression,
     eyes: finalEyes,
     mouth: finalMouth,
     pattern,
@@ -699,6 +751,7 @@ type Pack = {
   x: Accessory[];
   g: string;
   d: number;
+  ex?: ExpressionId;
 };
 
 export function encodeSpec(spec: MascotSpec): string {
@@ -715,6 +768,7 @@ export function encodeSpec(spec: MascotSpec): string {
     x: spec.accessories,
     g: spec.tagline,
     d: spec.seed,
+    ex: spec.expression,
   };
   const json = JSON.stringify(pack);
   const bytes = new TextEncoder().encode(json);
@@ -739,6 +793,7 @@ export function decodeSpec(param: string): MascotSpec | null {
       accent: typeof p.a === "string" ? p.a : undefined,
       ink: typeof p.i === "string" ? p.i : undefined,
       vibe: VIBE_IDS.includes(p.v as Vibe) ? (p.v as Vibe) : undefined,
+      expression: (p.ex && EXPRESSION_IDS.includes(p.ex as ExpressionId)) ? (p.ex as ExpressionId) : undefined,
       eyes: EYE_IDS.includes(p.e as EyeStyle) ? (p.e as EyeStyle) : undefined,
       mouth: MOUTH_IDS.includes(p.m as MouthStyle) ? (p.m as MouthStyle) : undefined,
       pattern: PATTERN_IDS.includes(p.t as Pattern) ? (p.t as Pattern) : undefined,

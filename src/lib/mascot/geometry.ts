@@ -350,13 +350,15 @@ export type EaseName =
   | "cubic"
   | "back"
   | "bounce"
-  | "elastic";
+  | "elastic"
+  | "flow";
 
 export const easings: Record<EaseName, (t: number) => number> = {
   linear: (t) => t,
   sine: (t) => -(Math.cos(Math.PI * t) - 1) / 2,
   quad: (t) => (t < 0.5 ? 2 * t * t : 1 - (-2 * t + 2) ** 2 / 2),
   cubic: (t) => (t < 0.5 ? 4 * t * t * t : 1 - (-2 * t + 2) ** 3 / 2),
+  flow: (t) => t * t * (3 - 2 * t), // smoothstep continuous flow without dead stops
   back: (t) => {
     const c1 = 1.70158;
     const c3 = c1 + 1;

@@ -7,6 +7,9 @@ import { MascotThumb } from "./MascotThumb";
 import {
   ACCESSORY_IDS,
   ACCESSORY_META,
+  EXPRESSION_IDS,
+  EXPRESSION_META,
+  EXPRESSION_FACE,
   EYE_IDS,
   EYE_META,
   MOUTH_IDS,
@@ -50,6 +53,7 @@ export function CharacterPanel({
       spec.accent,
       spec.ink,
       spec.vibe,
+      spec.expression,
       spec.eyes,
       spec.mouth,
       spec.pattern,
@@ -254,6 +258,42 @@ export function CharacterPanel({
               </span>
             </label>
           ))}
+        </div>
+      </div>
+
+      <div className="mt-3.5">
+        <div className="mb-1.5 flex items-center justify-between">
+          <span className="mono-label text-[10px]">Expression</span>
+          <span className="font-mono text-[10px] text-[#6f6759]">
+            {EXPRESSION_META[spec.expression ?? "happy"]?.label ?? "Happy"}
+          </span>
+        </div>
+        <div className="grid grid-cols-4 gap-1">
+          {EXPRESSION_IDS.map((expr) => {
+            const active = (spec.expression ?? "happy") === expr;
+            return (
+              <button
+                key={expr}
+                type="button"
+                onClick={() => update({ expression: expr, ...EXPRESSION_FACE[expr] })}
+                aria-pressed={active}
+                title={EXPRESSION_META[expr].blurb}
+                className={clsx(
+                  "flex flex-col items-center justify-center rounded-[10px] border p-1 text-center font-mono text-[8px] uppercase tracking-[0.03em] transition-colors min-h-[44px]",
+                  active
+                    ? "border-[#4b63ff] bg-[#4b63ff] text-white shadow-sm"
+                    : "border-[#d7d4cb] bg-[#efece4]/40 text-[#111111] hover:border-[#4b63ff]",
+                )}
+              >
+                <span className="text-[14px]" aria-hidden="true">
+                  {EXPRESSION_META[expr].emoji}
+                </span>
+                <span className="mt-0.5 w-full text-[7.5px] leading-[1.15]">
+                  {EXPRESSION_META[expr].label}
+                </span>
+              </button>
+            );
+          })}
         </div>
       </div>
 

@@ -8,11 +8,16 @@ export function Logo({
   markOnly?: boolean;
 }) {
   return (
-    <span className={clsx("inline-flex items-center gap-2.5", className)}>
+    <span
+      className={clsx(
+        "group inline-flex items-center gap-2.5 transition-transform duration-300 ease-out hover:scale-[1.03] active:scale-[0.98]",
+        className,
+      )}
+    >
       <svg
         viewBox="0 0 64 64"
         aria-hidden="true"
-        className="h-8 w-8 shrink-0 drop-shadow-[0_2px_4px_rgba(40,34,22,0.12)]"
+        className="h-8 w-8 shrink-0 drop-shadow-[0_2px_4px_rgba(40,34,22,0.12)] transition-transform duration-300 ease-out group-hover:-rotate-3"
       >
         <rect
           x="2"
@@ -44,8 +49,10 @@ export function Logo({
           stroke="#111111"
           strokeWidth="2.5"
         />
-        <circle cx="26" cy="35" r="2.6" fill="#111111" />
-        <circle cx="38" cy="35" r="2.6" fill="#111111" />
+        <g className="logo-eyes">
+          <circle cx="26" cy="35" r="2.6" fill="#111111" />
+          <circle cx="38" cy="35" r="2.6" fill="#111111" />
+        </g>
         <path
           d="M28 42c2 2.2 6 2.2 8 0"
           fill="none"

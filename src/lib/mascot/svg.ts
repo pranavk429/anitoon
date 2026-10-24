@@ -50,7 +50,7 @@ export function restPose(build: Build): Pose {
   for (const id of Object.keys(raw)) {
     matrices[id] = multiply(build.fit, raw[id]);
   }
-  return { matrices, raw, global: [1, 0, 0, 1, 0, 0] };
+  return { matrices, raw, global: [1, 0, 0, 1, 0, 0], lift: 0 };
 }
 
 function shadowMarkup(

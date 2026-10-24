@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import { SiteNav } from "@/components/site/SiteNav";
 import { HeroStage } from "@/components/site/HeroStage";
+import { InteractiveEyeProp } from "@/components/site/InteractiveEyeProp";
 import { Logo } from "@/components/site/Logo";
 import { MascotStill } from "@/components/mascot/MascotStill";
 import { DEMO_SPEC, GALLERY, SAMPLE_PROMPTS } from "@/lib/mascot/presets";
@@ -145,9 +146,14 @@ function PromptForm({ id }: { id: string }) {
         />
         <Link
           href="/studio"
-          className="btn btn-primary min-h-[44px] shrink-0 px-5 font-mono text-[12px] font-semibold text-white shadow-sm"
+          className="btn btn-primary group min-h-[44px] shrink-0 px-5 font-mono text-[12px] font-semibold text-white shadow-sm transition-transform duration-200 hover:scale-[1.02] active:scale-[0.98]"
         >
-          Open studio <ArrowRight size={14} strokeWidth={2.4} />
+          Open studio{" "}
+          <ArrowRight
+            size={14}
+            strokeWidth={2.4}
+            className="transition-transform duration-200 group-hover:translate-x-1"
+          />
         </Link>
       </div>
     </form>
@@ -169,14 +175,14 @@ export default function Home() {
           className="relative overflow-hidden border-b border-[#d7d4cb] bg-[#efece4] pb-16 pt-10 sm:pb-20 sm:pt-14 lg:pb-24 lg:pt-16"
         >
           {/* Subtle floating 3D props */}
-          <div className="pointer-events-none absolute -left-10 top-16 z-0 hidden lg:block opacity-90 animate-pulse">
+          <div className="pointer-events-none absolute -left-10 top-16 z-0 hidden lg:block opacity-90">
             <Image
               src="/art/prop-star.webp"
               alt=""
               width={140}
               height={140}
               unoptimized
-              className="drop-shadow-[0_8px_16px_rgba(40,34,22,0.12)]"
+              className="float-soft-alt drop-shadow-[0_8px_16px_rgba(40,34,22,0.12)]"
             />
           </div>
           <div className="pointer-events-none absolute right-10 top-20 z-0 hidden lg:block opacity-90">
@@ -197,19 +203,10 @@ export default function Home() {
               width={160}
               height={160}
               unoptimized
-              className="drop-shadow-[0_8px_16px_rgba(40,34,22,0.12)]"
+              className="float-soft-slow drop-shadow-[0_8px_16px_rgba(40,34,22,0.12)]"
             />
           </div>
-          <div className="pointer-events-none absolute right-1/4 top-10 z-0 hidden xl:block opacity-85">
-            <Image
-              src="/art/prop-eye.webp"
-              alt=""
-              width={100}
-              height={100}
-              unoptimized
-              className="drop-shadow-[0_8px_16px_rgba(40,34,22,0.12)]"
-            />
-          </div>
+          <InteractiveEyeProp />
 
           <div className="relative z-10 mx-auto max-w-[1140px] px-4 sm:px-6">
             <div className="flex flex-col items-center text-center">
@@ -224,11 +221,11 @@ export default function Home() {
                 <Image
                   src="/art/anitoon-wordmark.webp"
                   alt="ANITOON"
-                  width={501}
-                  height={180}
+                  width={520}
+                  height={135}
                   priority
                   unoptimized
-                  className="max-h-[140px] w-auto object-contain mix-blend-multiply drop-shadow-[0_10px_14px_rgba(40,34,22,0.14)] sm:max-h-[170px] lg:max-h-[200px]"
+                  className="logo-wordmark-settle max-h-[140px] w-auto object-contain drop-shadow-[0_12px_24px_rgba(40,34,22,0.14)] sm:max-h-[170px] lg:max-h-[200px]"
                 />
               </div>
 
@@ -637,8 +634,22 @@ export default function Home() {
           className="bg-[#efece4] pt-16 pb-12 sm:pt-20 sm:pb-16"
         >
           <div className="mx-auto max-w-[1140px] px-4 sm:px-6">
-            {/* Big CTA Card */}
-            <div className="card card-2xl rounded-[28px] border border-[#d7d4cb] bg-[#fefdf9] p-8 sm:p-14 text-center shadow-md mb-16 relative overflow-hidden">
+            <div className="relative mb-16">
+              {/* Mascot peek behind CTA card */}
+              <div
+                aria-hidden="true"
+                className="pointer-events-none absolute -top-12 right-12 z-0 hidden sm:block animate-mascot-peek drop-shadow-[0_6px_12px_rgba(40,34,22,0.14)]"
+              >
+                <MascotStill
+                  spec={DEMO_SPEC}
+                  motion="wave"
+                  at={0.25}
+                  className="w-24 h-24"
+                />
+              </div>
+
+              {/* Big CTA Card */}
+              <div className="card card-2xl rounded-[28px] border border-[#d7d4cb] bg-[#fefdf9] p-8 sm:p-14 text-center shadow-md relative z-10 overflow-hidden">
               <div className="pointer-events-none absolute -right-8 -top-8 z-0 opacity-40">
                 <Image
                   src="/art/prop-star.webp"
@@ -680,8 +691,9 @@ export default function Home() {
                 <PromptForm id="cta-prompt" />
               </div>
             </div>
+          </div>
 
-            {/* Footer */}
+          {/* Footer */}
             <footer className="border-t border-[#d7d4cb] pt-8">
               <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
                 <div>
