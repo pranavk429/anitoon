@@ -2,7 +2,7 @@ import JSZip from "jszip";
 import { buildMascot, type Build } from "./art";
 import { MOTION_BY_ID, posterPose, type MotionId } from "./animate";
 import { compileLottie, formatBytes, lottieBytes } from "./lottie";
-import { renderSvg, renderStill } from "./svg";
+import { renderSvg } from "./svg";
 import type { MascotSpec } from "./spec";
 
 export type PngOptions = {
@@ -30,12 +30,16 @@ export function downloadBlob(blob: Blob, filename: string) {
   setTimeout(() => URL.revokeObjectURL(url), 4000);
 }
 
-export function svgFor(build: Build, motionId: MotionId = "idle") {
+export function svgFor(
+  build: Build,
+  motionId: MotionId = "idle",
+  background: "paper" | "transparent" = "paper",
+) {
   const motion = MOTION_BY_ID[motionId];
   return renderSvg(build, posterPose(build, motion, 0.28), {
-    background: "paper",
+    background: background === "paper" ? "paper" : "none",
     paper: build.palette.paper,
-    shadow: "soft",
+    shadow: background === "paper" ? "soft" : "none",
     width: 1024,
     height: 1048,
     title: `${build.spec.name} — ${build.spec.tagline}`,
@@ -43,9 +47,13 @@ export function svgFor(build: Build, motionId: MotionId = "idle") {
   });
 }
 
-export function downloadSvg(spec: MascotSpec, motionId: MotionId = "idle") {
+export function downloadSvg(
+  spec: MascotSpec,
+  motionId: MotionId = "idle",
+  background: "paper" | "transparent" = "paper",
+) {
   const build = buildMascot(spec);
-  const svg = svgFor(build, motionId);
+  const svg = svgFor(build, motionId, background);
   downloadBlob(
     new Blob([svg], { type: "image/svg+xml;charset=utf-8" }),
     `${safeName(spec.name)}-${motionId}.svg`,
@@ -133,7 +141,7 @@ export function embedSnippet(spec: MascotSpec, origin: string, code: string) {
   src="${origin}/m/${code}?embed=1"
   title="${spec.name} the ${spec.species}"
   width="420" height="430" loading="lazy"
-  style="border:0;max-width:100%;background:transparent"
+  style="border:0;max-width:100%;background:#F6EFDF"
   allow="fullscreen"
 ></iframe>`;
 }
@@ -342,7 +350,7 @@ export function sizeReport(spec: MascotSpec, motionId: MotionId = "wave") {
     svgLabel: formatBytes(new TextEncoder().encode(svg).byteLength),
     layerCount: build.layers.length,
     boneCount: build.bones.length,
-    motion,
+    motion: MOTION_BY_ID[motionId],
   };
 }
 

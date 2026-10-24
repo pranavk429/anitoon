@@ -39,3 +39,13 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# internal design/build artifacts
+/.designprobe/
+/.shots/
+/BUILD.md
+/AGENT_REPORT.md
+/DESIGN_REPORT.md
+/IMPLEMENTATION_BRIEF.md
+/DESIGN_OVERHAUL_BRIEF.md
+/src/app/dev/

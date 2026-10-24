@@ -38,6 +38,7 @@ export type MascotStageProps = {
   stageClassName?: string;
   onTime?: (time: number, duration: number) => void;
   respectReducedMotion?: boolean;
+  resetKey?: number;
   ariaLabel?: string;
   style?: CSSProperties;
 };
@@ -65,6 +66,7 @@ export function MascotStage({
   stageClassName,
   onTime,
   respectReducedMotion = false,
+  resetKey = 0,
   ariaLabel,
   style,
 }: MascotStageProps) {
@@ -74,6 +76,20 @@ export function MascotStage({
     [buildProp, specKey],
   );
   const motionDef = MOTION_BY_ID[motion];
+  const rigBones = useMemo(() => {
+    const layerBones = new Set(build.layers.map((layer) => layer.bone));
+    const parentOfLayer = new Set(
+      build.bones
+        .filter((bone) => layerBones.has(bone.id) && bone.parent)
+        .map((bone) => bone.parent as string),
+    );
+    return build.bones.filter(
+      (bone) =>
+        bone.parent === null ||
+        layerBones.has(bone.id) ||
+        parentOfLayer.has(bone.id),
+    );
+  }, [build]);
   const startTime = scrub !== null ? scrub * motionDef.duration : 0;
   const pose = useMemo(
     () => initialPose(build, motion, startTime),
@@ -108,7 +124,7 @@ export function MascotStage({
       if (el && m) el.setAttribute("transform", matrixString(m));
     }
     if (showRig) {
-      for (const bone of build.bones) {
+      for (const bone of rigBones) {
         const m = p.matrices[bone.id];
         if (!m) continue;
         const [x, y] = applyMat(m, [0, 0]);
@@ -139,6 +155,15 @@ export function MascotStage({
     onTimeRef.current?.(startTime, motionDef.duration);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [build, motion]);
+
+  useEffect(() => {
+    if (resetKey === 0) return;
+    timeRef.current = 0;
+    lastRef.current = null;
+    paint(initialPose(build, motion, 0));
+    onTimeRef.current?.(0, motionDef.duration);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [resetKey]);
 
   useEffect(() => {
     if (scrub !== null) {
@@ -269,7 +294,7 @@ export function MascotStage({
         ))}
         {showRig && (
           <g aria-hidden="true" className="pointer-events-none">
-            {build.bones.map((bone) => {
+            {rigBones.map((bone) => {
               const m = pose.matrices[bone.id];
               if (!m) return null;
               const [x, y] = applyMat(m, [0, 0]);

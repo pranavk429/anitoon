@@ -31,6 +31,11 @@ const esc = (s: string) =>
     .replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;");
 
+const n = (value: number) => {
+  const v = Math.round(value * 100) / 100;
+  return Object.is(v, -0) ? "0" : `${v}`;
+};
+
 export function matrixString(m: Mat): string {
   const r = (n: number) => {
     const v = Math.round(n * 1000) / 1000;
@@ -115,6 +120,25 @@ export function renderSvg(
       if (st.opacity !== undefined && st.opacity !== 1)
         attrs.push(`opacity="${st.opacity}"`);
       parts.push(`<path ${attrs.join(" ")}/>`);
+    }
+    parts.push("</g>");
+  }
+  if (rig) {
+    parts.push('<g aria-hidden="true" pointer-events="none">');
+    for (const bone of build.bones) {
+      const m = pose.matrices[bone.id];
+      if (!m) continue;
+      const x = m[4];
+      const y = m[5];
+      const pm = bone.parent ? pose.matrices[bone.parent] : null;
+      const px = pm ? pm[4] : x;
+      const py = pm ? pm[5] : y;
+      parts.push(
+        `<line x1="${n(px)}" y1="${n(py)}" x2="${n(x)}" y2="${n(y)}" stroke="#FF5A45" stroke-width="1.6" stroke-dasharray="3 3"/>`,
+      );
+      parts.push(
+        `<circle cx="${n(x)}" cy="${n(y)}" r="${bone.parent === null ? 5.5 : 3.6}" fill="${bone.parent === null ? "#2B4BF2" : "#FFFDF7"}" stroke="#17151C" stroke-width="1.6"/>`,
+      );
     }
     parts.push("</g>");
   }

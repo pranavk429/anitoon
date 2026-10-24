@@ -315,7 +315,7 @@ export function compileLottie(
         s: scaleProp,
       },
       ao: 0,
-      shapes: layer.shapes.map((s, i) => shapeItem(s, i)),
+      shapes: [...layer.shapes].reverse().map((s, i) => shapeItem(s, i)),
       ip: 0,
       op: count,
       st: 0,

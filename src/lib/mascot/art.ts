@@ -76,7 +76,7 @@ const EYE_POS: Record<SpeciesId, Vec> = {
   bear: [29, -76],
   bunny: [31, -76],
   frog: [35, -80],
-  robot: [34, -78],
+  robot: [34, -93],
   blob: [29, -74],
 };
 
@@ -215,8 +215,8 @@ export function buildMascot(spec: MascotSpec): Build {
     { id: "shinL", parent: "legL", x: 0, y: limbs.legLen, rot: 1.5 },
     { id: "legR", parent: "body", x: 33, y: -4, rot: 1.5, counterParentScale: true },
     { id: "shinR", parent: "legR", x: 0, y: limbs.legLen, rot: -1.5 },
-    { id: "tail1", parent: "body", x: side * 60, y: -30, rot: side * 34, counterParentScale: true },
-    { id: "tail2", parent: "tail1", x: 0, y: -35, rot: side * 16 },
+    { id: "tail1", parent: "body", x: side * 74, y: -38, rot: side * 40, counterParentScale: true },
+    { id: "tail2", parent: "tail1", x: 0, y: -35, rot: side * 14 },
   ];
 
   const layers: Layer[] = [];
@@ -249,8 +249,8 @@ export function buildMascot(spec: MascotSpec): Build {
 
   /* ---------------- tail ---------------- */
   if (!isRobot && !isBlob && !isFrog) {
-    const thick = species === "fox" ? 18 : species === "bear" ? 13 : species === "bunny" ? 11 : 12;
-    const len = species === "bear" ? 22 : species === "bunny" ? 20 : 36;
+    const thick = species === "fox" ? 20 : species === "bear" ? 14 : species === "bunny" ? 11 : 13;
+    const len = species === "bear" ? 26 : species === "bunny" ? 24 : 42;
     const t1 = smooth(
       [
         [-thick * 0.45, 10],
